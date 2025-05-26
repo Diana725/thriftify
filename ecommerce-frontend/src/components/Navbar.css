@@ -1,0 +1,94 @@
+:root {
+  --color-primary: #2a5c5b;
+  --color-secondary: #d4a259;
+  --color-terra: #c96f56;
+  --color-cream: #f7f1e5;
+  --font-base: 'Poppins', sans-serif;
+  --font-logo: 'Pacifico', cursive;
+}
+
+.navbar {
+  background-color: var(--color-cream) !important;
+  font-family: var(--font-base);
+  padding: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  font-family: var(--font-logo);
+  color: var(--color-primary) !important;
+  font-size: 1.75rem;
+}
+
+.nav-link {
+  color: var(--color-primary) !important;
+  position: relative;
+  padding-bottom: 0.5rem;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: var(--color-secondary) !important;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-terra);
+  transition: width 0.3s;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+.navbar-toggler {
+  border-color: var(--color-secondary) !important;
+  font-size: 1.2rem;
+  color: var(--color-secondary) !important;
+}
+
+.toggler-icon {
+  font-size: 1.5rem;
+}
+
+.btn-primary {
+  background-color: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+  font-family: var(--font-base);
+}
+
+.btn-outline-terra {
+  border-color: var(--color-terra) !important;
+  color: var(--color-terra) !important;
+}
+
+.btn-outline-terra:hover {
+  background-color: var(--color-terra) !important;
+  color: var(--color-cream) !important;
+}
+
+.badge {
+  background-color: var(--color-terra) !important;
+  color: #fff;
+  font-size: 0.75rem;
+  top: 0.2rem;
+  right: 0.2rem;
+}
+@media (max-width: 768px) {
+  .custom-dropdown {
+    min-width: 140px; /* optional: adjust width to prevent overflow */
+    position: absolute !important;
+    inset: 0 auto auto 0 !important;
+    right: 20 !important;
+    top: 20 !important;
+    left: auto !important;
+    /* transform: translateX(0%) !important; */
+  }
+}
+

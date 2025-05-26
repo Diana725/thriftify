@@ -1,0 +1,97 @@
+:root {
+  --font-heading: "Montserrat", sans-serif;
+  --font-body:    "Poppins", sans-serif;
+  --color-cream:  #F7F1E5;
+  --color-primary:#2A5C5B;
+  --color-secondary:#D4A259;
+  --color-terra:  #C96F56;
+}
+
+/* Section wrapper */
+.reviews-section {
+  background: var(--color-cream);
+  padding: 2rem 1rem;
+  font-family: var(--font-body);
+}
+
+.reviews-title {
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+/* Review card */
+.review-card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.review-user {
+  font-weight: bold;
+  color: var(--color-primary);
+  margin-bottom: 0.25rem;
+}
+
+.review-date {
+  font-size: 0.85rem;
+  color: #666666;
+  margin-bottom: 0.5rem;
+}
+
+.review-rating {
+  color: var(--color-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.review-text {
+  color: #333333;
+  line-height: 1.4;
+}
+
+/* No reviews message */
+.no-reviews {
+  font-style: italic;
+  color: #555555;
+  margin-top: 0.5rem;
+}
+
+/* --- Skeleton Shimmer --- */
+.skeleton {
+  background: #e0e0e0;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.4),
+    transparent
+  );
+  animation: shimmer 1.2s infinite;
+}
+@keyframes shimmer {
+  to { transform: translateX(200%); }
+}
+
+/* Skeleton card & shapes */
+.skeleton-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.skeleton-text { height: 16px; }
+.skeleton-short  { width: 30%; }
+.skeleton-medium { width: 50%; }
+.skeleton-long   { width: 90%; }

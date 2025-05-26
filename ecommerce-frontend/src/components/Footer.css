@@ -1,0 +1,133 @@
+:root {
+  /* Assuming Navbar.css sets these variables globally */
+  --color-primary: #2a5c5b; 
+  --color-secondary: #d4a259; 
+  --color-terra: #c96f56; 
+  --color-cream: #f7f1e5; 
+  --font-base: 'Poppins', sans-serif;
+  --font-head: 'Montserrat', sans-serif;
+}
+
+.footer {
+  background-color: var(--color-primary);
+  color: var(--color-cream);
+  font-family: var(--font-base);
+  padding: 3rem 1rem;
+}
+
+.footer-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  justify-content: space-between;
+}
+
+.footer-section {
+  flex: 1 1 200px;
+}
+
+.footer-section h3 {
+  font-family: var(--font-head);
+  color: var(--color-secondary);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  font-size: 1.1rem;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin: 0.5rem 0;
+}
+
+.footer-section ul li a {
+  color: var(--color-cream);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+  color: var(--color-terra);
+}
+
+.social-icons a {
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  color: var(--color-cream);
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: var(--color-secondary);
+}
+
+.payment-icons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 2rem;
+}
+
+.contact p {
+  margin: 0.5rem 0;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.newsletter-form input {
+  flex: 1 1 200px;
+  padding: 0.5rem;
+  border: 1px solid var(--color-secondary);
+  border-radius: 4px;
+  font-family: var(--font-base);
+}
+
+.newsletter-form button {
+  padding: 0.5rem 1rem;
+  background-color: var(--color-secondary);
+  border: none;
+  color: var(--color-cream);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: var(--font-base);
+}
+
+.newsletter-form button:hover {
+  background-color: var(--color-terra);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  padding-top: 1rem;
+  text-align: center;
+}
+
+.footer-bottom a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-bottom a:hover {
+  color: var(--color-terra);
+}
+
+@media (max-width: 768px) {
+  .footer-top {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .social-icons a {
+    margin: 0 0.5rem;
+  }
+}

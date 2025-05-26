@@ -1,0 +1,104 @@
+:root {
+  --font-heading: "Montserrat", sans-serif;
+  --font-body:    "Poppins", sans-serif;
+  --color-cream:  #F7F1E5;
+  --color-primary:#2A5C5B;
+  --color-secondary:#D4A259;
+  --color-terra:  #C96F56;
+}
+
+/* Container & layout */
+.product-details {
+  background: var(--color-cream);
+  font-family: var(--font-body);
+}
+.product-details h2,
+.product-details p {
+  margin-bottom: 1rem;
+}
+
+/* Skeleton shimmer base */
+.skeleton {
+  background: #e0e0e0;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+.skeleton::after {
+  content: "";
+  position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.4),
+    transparent
+  );
+  animation: shimmer 1.2s infinite;
+}
+@keyframes shimmer {
+  to { transform: translateX(200%); }
+}
+
+/* Skeleton shapes */
+.skeleton-image-large {
+  width: 100%;
+  height: 350px;
+  margin-bottom: 1rem;
+}
+.skeleton-text {
+  height: 20px;
+  margin-bottom: 0.75rem;
+}
+.skeleton-text.title { width: 50%; }
+.skeleton-text.price { width: 30%; }
+.skeleton-text.desc  { width: 90%; }
+.skeleton-text.desc.short { width: 60%; }
+.skeleton-button {
+  width: 120px;
+  height: 40px;
+  border-radius: 6px;
+}
+.skeleton-button.small {
+  width: 40px;
+  height: 40px;
+}
+
+/* Real content styling */
+.product-title {
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+  font-size: 2rem;
+}
+.product-price {
+  font-family: var(--font-body);
+  color: var(--color-terra);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.product-description,
+.product-stock {
+  color: var(--color-primary);
+}
+
+/* Themed buttons */
+.btn-theme {
+  background: var(--color-secondary) !important;
+  color: var(--color-cream) !important;
+  border: none !important;
+  font-family: var(--font-body) !important;
+  transition: background 0.3s, transform 0.2s !important;
+}
+.btn-theme:hover {
+  background: var(--color-terra) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Image fade-in */
+.fade-image {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.fade-image.loaded {
+  opacity: 1;
+}
