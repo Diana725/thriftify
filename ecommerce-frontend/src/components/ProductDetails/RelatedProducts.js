@@ -4,7 +4,9 @@ import { motion } from "framer-motion";
 import { Container, Row, Col } from "react-bootstrap";
 import "./RelatedProducts.css";
 
-const API = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api";
+const API =
+  process.env.REACT_APP_API_BASE_URL ||
+  "https://www.thriftify.website:8000/api";
 // const BASEURL = API.replace("/api", "");
 
 // scroll-triggered fade-in variant

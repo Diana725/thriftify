@@ -20,7 +20,9 @@ const imageMap = {
   Denim: denimImg,
 };
 
-const API = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api";
+const API =
+  process.env.REACT_APP_API_BASE_URL ||
+  "https://www.thriftify.website:8000/api";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },

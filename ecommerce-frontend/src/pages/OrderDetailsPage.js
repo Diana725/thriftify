@@ -15,7 +15,9 @@ import {
 import { toast } from "react-toastify";
 import ReviewForm from "../components/ReviewForm";
 
-const API = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api";
+const API =
+  process.env.REACT_APP_API_BASE_URL ||
+  "https://www.thriftify.website:8000/api";
 const STATUS_STEPS = ["pending", "processing", "shipped", "delivered"];
 
 export default function OrderDetailsPage() {

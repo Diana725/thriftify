@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import "./TrendingProducts.css";
 
-const API = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api";
+const API =
+  process.env.REACT_APP_API_BASE_URL ||
+  "https://www.thriftify.website:8000/api";
 const BASEURL = API.replace("/api", "");
 
 // scroll-triggered fade-in variant
@@ -62,7 +64,7 @@ export default function TrendingProducts() {
                 <div className="hot-deal-badge">Hot Deal</div>
                 <img
                   loading="lazy"
-                  src={`http://localhost:8000/storage/${p.image_url}`}
+                  src={`https://www.thriftify.website:8000/storage/${p.image_url}`}
                   alt={p.name}
                   className="trending-image fade-image"
                   onLoad={(e) => e.currentTarget.classList.add("loaded")}

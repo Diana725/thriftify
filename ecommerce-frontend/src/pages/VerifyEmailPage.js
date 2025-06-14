@@ -15,7 +15,7 @@ export default function VerifyEmailPage() {
 
     try {
       const res = await fetch(
-        "http://localhost:8000/api/email/verification-notification",
+        "https://www.thriftify.website:8000/api/email/verification-notification",
         {
           method: "POST",
           headers: {

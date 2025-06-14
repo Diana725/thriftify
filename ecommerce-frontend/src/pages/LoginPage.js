@@ -16,7 +16,7 @@ export default function LoginPage() {
     setIsLoggingin(true);
 
     try {
-      const res = await fetch("http://localhost:8000/api/login", {
+      const res = await fetch("https://www.thriftify.website:8000/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

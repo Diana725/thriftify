@@ -11,7 +11,7 @@ export default function AddProduct() {
 
   useEffect(() => {
     // Fetch categories from API
-    fetch("http://localhost:8000/api/categories")
+    fetch("https://www.thriftify.website:8000/api/categories")
       .then((res) => res.json())
       .then((data) => setCategories(data))
       .catch((error) => console.error("Error fetching categories:", error));

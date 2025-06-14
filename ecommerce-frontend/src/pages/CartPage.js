@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 const CartPage = () => {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
-  const API_BASE_URL = "http://localhost:8000/api";
+  const API_BASE_URL = "https://www.thriftify.website:8000/api";
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [errorMsg, setErrorMsg] = useState("");

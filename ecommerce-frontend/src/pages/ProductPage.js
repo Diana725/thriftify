@@ -18,7 +18,9 @@ import CategoriesGrid from "../components/Homepage/Categories";
 import "./ProductPage.css";
 import { AuthContext } from "../contexts/AuthContext";
 
-const API = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api";
+const API =
+  process.env.REACT_APP_API_BASE_URL ||
+  "https://www.thriftify.website:8000/api";
 const BASEURL = API.replace("/api", "");
 
 const fadeInUp = {

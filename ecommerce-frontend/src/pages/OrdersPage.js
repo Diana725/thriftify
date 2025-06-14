@@ -13,7 +13,9 @@ import {
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const API = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api";
+const API =
+  process.env.REACT_APP_API_BASE_URL ||
+  "https://www.thriftify.website:8000/api";
 
 // define your order-status steps in the order they occur
 const STATUS_STEPS = ["pending", "processing", "shipped", "delivered"];

@@ -9,7 +9,7 @@ Route::get('/', function () {
 
 Route::get('/password/reset/{token}', function (Request $request, $token) {
     $url = sprintf(
-        'http://localhost:3000/reset-password?token=%s&email=%s',
+        'https://www.thriftify.website/reset-password?token=%s&email=%s',
         $token,
         urlencode($request->query('email'))
     );

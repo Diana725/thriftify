@@ -31,7 +31,7 @@ export default function AdminOrderDetailsPage() {
 
   // 1. Fetch the order on mount
   useEffect(() => {
-    fetch(`http://localhost:8000/api/admin/orders/${id}`, {
+    fetch(`https://www.thriftify.website:8000/api/admin/orders/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         Accept: "application/json",
@@ -56,16 +56,19 @@ export default function AdminOrderDetailsPage() {
   const handleStatusChange = async (newStatus) => {
     setStatusSaving(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/admin/orders/${id}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-        },
-        body: JSON.stringify({ order_status: newStatus }),
-      });
+      const res = await fetch(
+        `https://www.thriftify.website:8000/api/admin/orders/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          body: JSON.stringify({ order_status: newStatus }),
+        }
+      );
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.message || "Update failed");

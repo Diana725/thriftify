@@ -21,19 +21,22 @@ export default function RegisterPage() {
     setIsRegistering(true);
 
     try {
-      const res = await fetch("http://localhost:8000/api/register", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          password_confirmation: passwordConfirm,
-        }),
-      });
+      const res = await fetch(
+        "https://www.thriftify.website:8000/api/register",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            password,
+            password_confirmation: passwordConfirm,
+          }),
+        }
+      );
 
       const data = await res.json();
       if (!res.ok)
