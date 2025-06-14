@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://www.thriftify.website/'],
+    'allowed_origins' => ['https://www.thriftify.website'],
 
     'allowed_origins_patterns' => [],
 
