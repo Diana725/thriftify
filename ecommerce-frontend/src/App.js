@@ -1,5 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { useContext, useEffect } from "react";
 import "./App.css";
 import Home from "./pages/Home";
 import AddProduct from "./pages/AddProduct";
@@ -7,7 +13,6 @@ import Navbar from "./components/Navbar";
 import WhyChooseUs from "./components/WhyChooseUs";
 import Newsletter from "./components/Newsletter";
 import Footer from "./components/Footer";
-import ProductDetails from "./pages/ProductDetails";
 import ProductDetailsPage from "./pages/ProductDetails";
 import ProductPage from "./pages/ProductPage";
 import LoginPage from "./pages/LoginPage";
@@ -22,11 +27,31 @@ import AdminProductsPage from "./pages/AdminProductsPage";
 import AdminOrdersPage from "./pages/AdminOrdersPage";
 import AdminOrderDetailsPage from "./pages/AdminOrderDetailsPage";
 import AuthModal from "./components/AuthModal";
-import { useContext } from "react";
 import { AuthContext } from "./contexts/AuthContext";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
+  return null;
+}
+
+function AnimatedPage({ children }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 export default function AppRoutes() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -34,215 +59,138 @@ export default function AppRoutes() {
 
   return (
     <Router>
+      <ScrollToTop />
       <Navbar />
       <AuthModal show={showAuth} onHide={() => setShowAuth(false)} />
-      <AnimatePresence exitBeforeEnter>
+      <AnimatePresence mode="wait">
         <Routes>
           <Route
             path="/"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                <Home />{" "}
-              </motion.div>
+              <AnimatedPage>
+                <Home />
+              </AnimatedPage>
             }
           />
           <Route
             path="/products/:id"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
+              <AnimatedPage>
                 <ProductDetailsPage />
-              </motion.div>
+              </AnimatedPage>
             }
           />
           <Route
             path="/checkout/:orderId"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
+              <AnimatedPage>
                 <CheckoutPage />
-              </motion.div>
+              </AnimatedPage>
             }
           />
           <Route
             path="/payment/confirmationpage"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
+              <AnimatedPage>
                 <PaymentSuccessPage />
-              </motion.div>
+              </AnimatedPage>
             }
           />
           <Route path="/add-product" element={<AddProduct />} />
           <Route
             path="/products"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
+              <AnimatedPage>
                 <ProductPage />
-              </motion.div>
+              </AnimatedPage>
             }
           />
           <Route
             path="/products/category/:categoryId"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
+              <AnimatedPage>
                 <ProductPage />
-              </motion.div>
+              </AnimatedPage>
             }
           />
           <Route
             path="/orders/:orderId"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
+              <AnimatedPage>
                 <OrderDetailsPage />
-              </motion.div>
+              </AnimatedPage>
             }
           />
           <Route
             path="/login"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
+              <AnimatedPage>
                 <LoginPage />
-              </motion.div>
+              </AnimatedPage>
             }
           />
           <Route
             path="/verify-email"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
+              <AnimatedPage>
                 <VerifyEmailPage />
-              </motion.div>
+              </AnimatedPage>
             }
           />
           <Route
             path="/forgot-password"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
+              <AnimatedPage>
                 <ForgotPasswordPage />
-              </motion.div>
+              </AnimatedPage>
             }
           />
           <Route
             path="/reset-password"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
+              <AnimatedPage>
                 <ResetPasswordPage />
-              </motion.div>
+              </AnimatedPage>
             }
           />
           <Route
             path="/wishlist"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
+              <AnimatedPage>
                 <WishlistPage />
-              </motion.div>
+              </AnimatedPage>
             }
           />
           <Route
             path="/register"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
+              <AnimatedPage>
                 <RegisterPage />
-              </motion.div>
+              </AnimatedPage>
             }
           />
           <Route
             path="/cart"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
+              <AnimatedPage>
                 <CartPage />
-              </motion.div>
+              </AnimatedPage>
             }
           />
           <Route
             path="/orders"
             element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4 }}
-              >
+              <AnimatedPage>
                 <OrdersPage />
-              </motion.div>
+              </AnimatedPage>
             }
           />
           <Route path="/admin/products" element={<AdminProductsPage />} />
           <Route path="/admin/orders" element={<AdminOrdersPage />} />
           <Route path="/admin/orders/:id" element={<AdminOrderDetailsPage />} />
-          {/* <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} /> */}
         </Routes>
       </AnimatePresence>
       <WhyChooseUs />
-      {/* <Newsletter /> */}
       <Footer />
     </Router>
   );

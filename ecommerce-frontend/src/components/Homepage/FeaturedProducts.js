@@ -24,11 +24,11 @@ const fadeInUp = {
 };
 
 export default function FeaturedProducts() {
-  const [products, setProducts] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [wishlistIds, setWishlistIds] = useState([]);
   const { isAuthenticated, setShowAuth } = useContext(AuthContext);
 
-  // fetch featured products
   useEffect(() => {
     fetch(`${API}/products?featured=true`)
       .then((res) => res.json())
@@ -36,32 +36,16 @@ export default function FeaturedProducts() {
       .catch((err) => {
         console.error("Error fetching featured products:", err);
         setProducts([]);
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  // fetch user's wishlist IDs whenever they log in or the component mounts
   useEffect(() => {
     if (!isAuthenticated) {
       setWishlistIds([]);
       return;
     }
-    fetch(`${API}/wishlist`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        Accept: "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        // data is array of wishlist objects, e.g. { id, product_id, ... }
-        const ids = Array.isArray(data) ? data.map((w) => w.product_id) : [];
-        setWishlistIds(ids);
-      })
-      .catch((err) => console.error("Error fetching wishlist:", err));
-
-    // also refresh when wishlistUpdated event fires
-    const onWishlistUpdated = () => {
-      // re-run the fetch
+    const fetchWishlist = () => {
       fetch(`${API}/wishlist`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -75,6 +59,10 @@ export default function FeaturedProducts() {
         })
         .catch((err) => console.error("Error fetching wishlist:", err));
     };
+
+    fetchWishlist();
+
+    const onWishlistUpdated = () => fetchWishlist();
     window.addEventListener("wishlistUpdated", onWishlistUpdated);
     return () =>
       window.removeEventListener("wishlistUpdated", onWishlistUpdated);
@@ -137,19 +125,19 @@ export default function FeaturedProducts() {
   return (
     <motion.section
       className="featured-products-section"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
+      initial={false}
+      animate="visible"
       variants={fadeInUp}
+      style={{ minHeight: "300px" }}
     >
       <ToastContainer position="top-right" autoClose={3000} />
       <h2 className="featured-title">Featured Products</h2>
       <Container>
         <Row className="g-4">
-          {products === null
+          {loading
             ? Array.from({ length: 8 }).map((_, i) => (
                 <Col key={i} xs={12} sm={6} md={4} lg={3}>
-                  {/* …your skeleton loader here… */}
+                  <div className="skeleton skeleton-card"></div>
                 </Col>
               ))
             : products.map((product) => {
@@ -159,11 +147,10 @@ export default function FeaturedProducts() {
                     <Card className="featured-card shadow-lg">
                       <div className="card-img-wrapper">
                         <Card.Img
-                          loading="lazy"
-                          variant="top"
                           src={product.image_url}
                           alt={product.name}
                           className="featured-image"
+                          style={{ height: "200px", objectFit: "cover" }}
                         />
                       </div>
                       <Card.Body>
@@ -181,7 +168,6 @@ export default function FeaturedProducts() {
                             View More
                           </Link>
                           <div>
-                            {/* Disable the wishlist button if already in wishlist */}
                             <button
                               className="btn btn-wishlist btn-sm me-2"
                               onClick={() =>
@@ -197,7 +183,6 @@ export default function FeaturedProducts() {
                               ❤️
                             </button>
 
-                            {/* Cart button stays as-is */}
                             <button
                               className="btn btn-cart btn-sm"
                               onClick={() => handleAddToCart(product.id)}
@@ -213,7 +198,7 @@ export default function FeaturedProducts() {
               })}
         </Row>
 
-        {products !== null && (
+        {!loading && products.length > 0 && (
           <div className="text-center featured-view-all">
             <Link
               to="/products"

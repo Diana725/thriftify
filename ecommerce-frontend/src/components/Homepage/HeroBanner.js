@@ -24,7 +24,6 @@ const slides = [
   },
 ];
 
-// Fade-in slide-up variant
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
@@ -34,10 +33,10 @@ export default function HeroBanner() {
   return (
     <motion.section
       className="hero-section"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
+      initial={false}
+      animate="visible"
       variants={fadeInUp}
+      style={{ minHeight: "400px" }}
     >
       <Carousel controls indicators fade className="hero-carousel">
         {slides.map((slide, idx) => (
@@ -46,7 +45,7 @@ export default function HeroBanner() {
               className="hero-image"
               src={slide.image}
               alt={slide.title}
-              loading="lazy"
+              style={{ height: "400px", width: "100%", objectFit: "cover" }}
             />
             <Carousel.Caption className="hero-caption">
               <h2 className="hero-title">{slide.title}</h2>

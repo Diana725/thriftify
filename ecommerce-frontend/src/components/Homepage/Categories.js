@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import "./Categories.css";
 
-// static imports...
+// Static imports
 import coatsImg from "../../assets/pexels-bellazhong-3782786.jpg";
 import topsImg from "../../assets/bags.jpg";
 import dressesImg from "../../assets/others.jpg";
@@ -30,14 +30,24 @@ const fadeInUp = {
 };
 
 export default function CategoryCarousel() {
-  const [categories, setCategories] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const trackRef = useRef(null);
+
+  // Preload images once at mount
+  useEffect(() => {
+    Object.values(imageMap).forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   useEffect(() => {
     fetch(`${API}/categories`)
       .then((res) => res.json())
       .then((data) => setCategories(data))
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
   const scroll = (dir) => {
@@ -53,10 +63,10 @@ export default function CategoryCarousel() {
   return (
     <motion.section
       className="category-carousel-container fade-section trending-section"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
+      initial={false}
+      animate="visible"
       variants={fadeInUp}
+      style={{ minHeight: "200px" }}
     >
       <h3 className="section-title text-secondary">Shop by Category</h3>
       <div className="carousel-wrapper">
@@ -69,9 +79,8 @@ export default function CategoryCarousel() {
         </button>
 
         <div className="carousel-track" ref={trackRef}>
-          {categories === null
-            ? /* show 5 CSS skeletons while loading */
-              Array.from({ length: 5 }).map((_, i) => (
+          {loading
+            ? Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="category-card">
                   <div className="skeleton skeleton-image" />
                   <div className="skeleton skeleton-text" />
@@ -84,7 +93,6 @@ export default function CategoryCarousel() {
                   className="category-card"
                 >
                   <img
-                    loading="lazy"
                     src={imageMap[cat.name] || defaultImg}
                     alt={cat.name}
                     className="category-image"

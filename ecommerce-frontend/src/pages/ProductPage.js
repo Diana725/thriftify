@@ -42,7 +42,6 @@ export default function ProductPage() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      // if logged out, clear the list
       setWishlistIds([]);
       return;
     }
@@ -56,7 +55,6 @@ export default function ProductPage() {
       })
         .then((res) => res.json())
         .then((data) => {
-          // extract product_id from each wishlist entry
           const ids = Array.isArray(data) ? data.map((w) => w.product_id) : [];
           setWishlistIds(ids);
         })
@@ -64,8 +62,6 @@ export default function ProductPage() {
     };
 
     fetchWishlist();
-
-    // re-fetch if wishlistUpdated event is fired
     window.addEventListener("wishlistUpdated", fetchWishlist);
     return () => {
       window.removeEventListener("wishlistUpdated", fetchWishlist);
@@ -81,9 +77,7 @@ export default function ProductPage() {
 
     fetch(url)
       .then((res) => res.json())
-      .then((data) => {
-        setProducts(data);
-      })
+      .then((data) => setProducts(data))
       .catch((err) => {
         console.error("Error fetching products:", err);
         setProducts([]);
@@ -91,7 +85,6 @@ export default function ProductPage() {
       .finally(() => setIsLoading(false));
   }, [categoryId]);
 
-  // sort when sortOption changes
   useEffect(() => {
     const sorted = [...products];
     switch (sortOption) {
@@ -108,7 +101,6 @@ export default function ProductPage() {
     setProducts(sorted);
   }, [sortOption]);
 
-  // pagination
   const last = currentPage * productsPerPage;
   const first = last - productsPerPage;
   const pageProducts = products.slice(first, last);
@@ -116,7 +108,6 @@ export default function ProductPage() {
 
   const handleAddToCart = (id) => {
     if (!isAuthenticated) {
-      // show login/register prompt
       setShowAuth(true);
       return;
     }
@@ -182,6 +173,7 @@ export default function ProductPage() {
     }, 300);
     return () => clearTimeout(timer);
   }, [searchTerm]);
+
   const handleSearch = () => {
     setIsLoading(true);
     fetch(`${API}/products/search?q=${encodeURIComponent(searchTerm)}`)
@@ -198,17 +190,16 @@ export default function ProductPage() {
   return (
     <motion.section
       className="products-section"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
+      initial={false}
+      animate="visible"
       variants={fadeInUp}
+      style={{ minHeight: "300px" }}
     >
       <ToastContainer position="top-right" autoClose={2000} />
 
       <Container className="py-4">
-        {/* Filters */}
         <CategoriesGrid />
-        {/* 2) Search Bar */}
+
         <div className="search-wrapper mb-3 position-relative">
           <InputGroup>
             <FormControl
@@ -249,7 +240,6 @@ export default function ProductPage() {
           )}
         </div>
 
-        {/* Sort */}
         <div className="d-flex justify-content-end mb-3">
           <Dropdown>
             <Dropdown.Toggle className="sort-toggle">
@@ -269,12 +259,11 @@ export default function ProductPage() {
           </Dropdown>
         </div>
 
-        {/* Product Grid */}
         <Row className="g-4">
           {isLoading
             ? Array.from({ length: 12 }).map((_, i) => (
                 <Col key={i} xs={12} sm={6} md={4} lg={3}>
-                  {/* skeleton loader */}
+                  <div className="skeleton skeleton-card"></div>
                 </Col>
               ))
             : pageProducts.map((prod) => {
@@ -287,10 +276,11 @@ export default function ProductPage() {
                           src={prod.image_url}
                           alt={prod.name}
                           className="product-image fade-image"
-                          loading="lazy"
-                          onLoad={(e) =>
-                            e.currentTarget.classList.add("loaded")
-                          }
+                          style={{
+                            height: "200px",
+                            objectFit: "cover",
+                            width: "100%",
+                          }}
                         />
                       </Link>
                       <div className="product-body">
@@ -335,7 +325,6 @@ export default function ProductPage() {
               })}
         </Row>
 
-        {/* Pagination */}
         {pageCount > 1 && (
           <Pagination className="mt-4 justify-content-center">
             {Array.from({ length: pageCount }).map((_, i) => (

@@ -8,7 +8,6 @@ const API =
   "https://www.thriftify.website:8000/api";
 const BASEURL = API.replace("/api", "");
 
-// scroll-triggered fade-in variant
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
@@ -22,13 +21,12 @@ export default function TrendingProducts() {
     fetch(`${API}/products/trending`)
       .then((res) => res.json())
       .then((data) => {
-        // if the API ever returns a single object or error object, force an array
         const list = Array.isArray(data) ? data : [];
         setProducts(list);
       })
       .catch((err) => {
         console.error(err);
-        setProducts([]); // fallback to empty
+        setProducts([]);
       })
       .finally(() => setIsLoading(false));
   }, []);
@@ -36,17 +34,16 @@ export default function TrendingProducts() {
   return (
     <motion.section
       className="trending-section"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
+      initial={false}
+      animate="visible"
       variants={fadeInUp}
+      style={{ minHeight: "250px" }}
     >
       <h2 className="trending-title">🔥 Trending Products</h2>
 
       <div className="trending-carousel">
         {isLoading
-          ? // 4 CSS shimmer skeletons
-            Array.from({ length: 4 }).map((_, i) => (
+          ? Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="trending-card skeleton-card">
                 <div className="skeleton skeleton-badge"></div>
                 <div className="skeleton skeleton-image"></div>
@@ -54,8 +51,7 @@ export default function TrendingProducts() {
                 <div className="skeleton skeleton-text skeleton-price"></div>
               </div>
             ))
-          : // Real product cards
-            products.map((p) => (
+          : products.map((p) => (
               <Link
                 key={p.id}
                 to={`/products/${p.id}`}
@@ -63,11 +59,10 @@ export default function TrendingProducts() {
               >
                 <div className="hot-deal-badge">Hot Deal</div>
                 <img
-                  loading="lazy"
-                  src={`https://www.thriftify.website:8000/storage/${p.image_url}`}
+                  src={`${BASEURL}/storage/${p.image_url}`}
                   alt={p.name}
                   className="trending-image fade-image"
-                  onLoad={(e) => e.currentTarget.classList.add("loaded")}
+                  style={{ height: "200px", objectFit: "cover" }}
                 />
                 <h3 className="trending-name">{p.name}</h3>
                 <p className="trending-price">Ksh {p.price}</p>
