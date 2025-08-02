@@ -15,13 +15,8 @@ class Product extends Model
         'description',
         'price',
         'stock_quantity',
-        'image_url',
     ];
 
-    public function category()
-{
-    return $this->belongsTo(Category::class);
-}
 public function categories()
 {
     return $this->belongsToMany(Category::class, 'product_categories');
@@ -37,4 +32,7 @@ public function getAverageRatingAttribute()
     // returns a float, e.g. 4.2
     return round($this->reviews()->avg('rating') ?: 0, 1);
 }
+ public function images() {
+        return $this->hasMany(ProductImage::class);
+    }
 }

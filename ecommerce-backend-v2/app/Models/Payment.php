@@ -14,6 +14,8 @@ class Payment extends Model
         'amount',
         'payment_method',
         'payment_status',
+	'api_ref',       // ✅ Add this
+        'invoice_id',    
     ];
 
     public function order()
