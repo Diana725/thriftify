@@ -1,63 +1,80 @@
+/* Section shell — match page theme */
 .why-choose-container {
-    text-align: center;
-    padding: 50px 20px;
-    background: #ffffff;
-  }
-  
-  .section-title {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 30px;
-    color: #333333;
-  }
-  
-  .features-grid {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  .feature-card {
-    background: white;
-    padding: 20px;
-    width: 280px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    transition: transform 0.3s ease;
-  }
-  
-  .feature-card:hover {
-    transform: scale(1.05);
-  }
-  
-  .feature-icon {
-    color: #ff6f61;
-    margin-bottom: 15px;
-  }
-  
-  .feature-title {
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #0e6ba8;
-  }
-  
-  .feature-description {
-    font-size: 1rem;
-    color: #555;
-    margin-top: 10px;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .features-grid {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .feature-card {
-      width: 90%;
-    }
-  }
-  
+  text-align: center;
+  padding: 3rem 1rem;
+  background: var(--color-cream);
+}
+
+.shadow-soft { box-shadow: 0 6px 24px rgba(0,0,0,0.06); }
+
+/* Headings */
+.why-title {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--color-primary);
+  font-size: clamp(1.6rem, 3.2vw, 2rem);
+  margin-bottom: .35rem;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.why-subtitle {
+  color: #6b7280;
+  margin: 0 0 1.5rem 0;
+  font-size: .98rem;
+}
+
+/* Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Cards */
+.feature-card {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.10);
+  border-color: rgba(0,0,0,.08);
+}
+
+/* Icon pill (uses your palette) */
+.icon-pill {
+  width: 56px; height: 56px;
+  margin: 0 auto 12px;
+  border-radius: 999px;
+  display: grid; place-items: center;
+  background: color-mix(in srgb, var(--color-secondary) 14%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--color-secondary) 38%, transparent);
+}
+.feature-icon { color: var(--color-secondary); } /* your existing icon class */
+
+/* Text */
+.feature-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.1rem;
+  color: var(--color-primary);
+  margin: .25rem 0 .35rem;
+}
+.feature-description {
+  font-family: var(--font-base);
+  font-size: .98rem;
+  color: #555;
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .features-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .features-grid { grid-template-columns: 1fr; }
+}

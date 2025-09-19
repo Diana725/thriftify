@@ -22,7 +22,7 @@ export default function NotificationsBell() {
       <Dropdown.Toggle
         variant="light"
         id="notif-dropdown"
-        style={{ backgroundColor: "#f7f1e5" }}
+        style={{ backgroundColor: "#f7f1e5", position: "relative" }} // 👈 add position: relative here
       >
         <BellFill
           size={20}
@@ -32,7 +32,13 @@ export default function NotificationsBell() {
           <Badge
             bg="#c96f56"
             pill
-            className="position-absolute top-0 start-60 down-2 translate-middle"
+            className="position-absolute top-0 start-100 d-inline-flex justify-content-center align-items-center"
+            style={{
+              transform: "translate(-60%, -30%)",
+              minWidth: "1.2rem",
+              height: "1.2rem",
+              fontSize: "0.75rem",
+            }}
           >
             {unreadCount}
           </Badge>

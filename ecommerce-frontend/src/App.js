@@ -31,6 +31,9 @@ import { AuthContext } from "./contexts/AuthContext";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import OffersPage from "./pages/OffersPage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -47,6 +50,7 @@ function AnimatedPage({ children }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
+      onAnimationComplete={() => window.scrollTo(0, 0)}
     >
       {children}
     </motion.div>
@@ -102,6 +106,14 @@ export default function AppRoutes() {
             element={
               <AnimatedPage>
                 <ProductPage />
+              </AnimatedPage>
+            }
+          />
+          <Route
+            path="/offers"
+            element={
+              <AnimatedPage>
+                <OffersPage />
               </AnimatedPage>
             }
           />
@@ -192,6 +204,14 @@ export default function AppRoutes() {
       </AnimatePresence>
       <WhyChooseUs />
       <Footer />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnHover
+      />
     </Router>
   );
 }

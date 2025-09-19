@@ -1,9 +1,30 @@
 // src/pages/PaymentSuccessPage.js
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Alert, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 export default function PaymentSuccessPage() {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      fetch("https://www.thriftify.website/api/cart/clear", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(() => {
+          // Notify any components listening (e.g., cart icon/nav)
+          window.dispatchEvent(new Event("cartUpdated"));
+          console.log("Cart cleared after successful payment.");
+        })
+        .catch((err) => {
+          console.error("Failed to clear cart after payment:", err);
+        });
+    }
+  }, []);
+
   return (
     <Container className="py-5 text-center mt-5">
       <Alert variant="success" className="mb-4">

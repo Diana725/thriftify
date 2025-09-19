@@ -3,10 +3,10 @@ import { Modal, Nav, Tab, Form, Button, InputGroup } from "react-bootstrap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import GoogleAuthButton from "../utils/GoogleAuthButton";
 
 const API =
-  process.env.REACT_APP_API_BASE_URL ||
-  "https://www.thriftify.website:8000/api";
+  process.env.REACT_APP_API_BASE_URL || "https://www.thriftify.website/api";
 
 export default function AuthModal({ show, onHide }) {
   const [activeTab, setActiveTab] = useState("login");
@@ -38,7 +38,7 @@ export default function AuthModal({ show, onHide }) {
       window.dispatchEvent(new Event("login"));
       toast.success("Logged in!");
       onHide();
-      navigate("/"); // optional: redirect after closing
+      navigate("/");
     } catch (err) {
       console.error(err);
       toast.error(err.message || "Login error");
@@ -56,7 +56,6 @@ export default function AuthModal({ show, onHide }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Registration failed");
 
-      // auto-login after register
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
       window.dispatchEvent(new Event("login"));
@@ -91,6 +90,17 @@ export default function AuthModal({ show, onHide }) {
           <Tab.Content>
             {/* LOGIN FORM */}
             <Tab.Pane eventKey="login">
+              {/* Google first */}
+              <GoogleAuthButton />
+
+              {/* OR divider */}
+              <div className="d-flex align-items-center my-3">
+                <hr className="flex-grow-1" />
+                <span className="mx-2 text-muted">OR</span>
+                <hr className="flex-grow-1" />
+              </div>
+
+              {/* Email/password form */}
               <Form onSubmit={handleLogin}>
                 <Form.Group className="mb-3" controlId="loginEmail">
                   <Form.Label>Email</Form.Label>
@@ -130,6 +140,17 @@ export default function AuthModal({ show, onHide }) {
 
             {/* REGISTER FORM */}
             <Tab.Pane eventKey="register">
+              {/* Google first */}
+              <GoogleAuthButton />
+
+              {/* OR divider */}
+              <div className="d-flex align-items-center my-3">
+                <hr className="flex-grow-1" />
+                <span className="mx-2 text-muted">OR</span>
+                <hr className="flex-grow-1" />
+              </div>
+
+              {/* Registration form */}
               <Form onSubmit={handleRegister}>
                 <Form.Group className="mb-3" controlId="regName">
                   <Form.Label>Name</Form.Label>

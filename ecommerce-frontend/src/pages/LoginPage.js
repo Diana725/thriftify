@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import GoogleAuthButton from "../utils/GoogleAuthButton";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -16,7 +17,7 @@ export default function LoginPage() {
     setIsLoggingin(true);
 
     try {
-      const res = await fetch("https://www.thriftify.website:8000/api/login", {
+      const res = await fetch("https://www.thriftify.website/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,6 +45,18 @@ export default function LoginPage() {
       <div className="card p-4 shadow-lg" style={{ width: "400px" }}>
         <h2 className="text-center mb-3">Login</h2>
         {error && <p className="text-danger text-center">{error}</p>}
+
+        {/* Google first */}
+        <GoogleAuthButton />
+
+        {/* OR divider */}
+        <div className="d-flex align-items-center my-3">
+          <hr className="flex-grow-1" />
+          <span className="mx-2 text-muted">OR</span>
+          <hr className="flex-grow-1" />
+        </div>
+
+        {/* Sign-in form */}
         <form onSubmit={handleLogin}>
           <div className="mb-3">
             <input
@@ -55,6 +68,7 @@ export default function LoginPage() {
               required
             />
           </div>
+
           <div className="input-group mb-3">
             <input
               type={showPassword ? "text" : "password"}
@@ -76,18 +90,14 @@ export default function LoginPage() {
           <button
             type="submit"
             className="btn btn-primary w-100"
-            disabled={isLoggingin} // disable while loading
+            disabled={isLoggingin}
           >
             {isLoggingin ? "Logging In…" : "Login"}
           </button>
+
           <div className="text-center mt-2">
             <Link to="/forgot-password">Forgot password?</Link>
           </div>
-          {/* <div className="text-center mt-3">
-            <button className="btn btn-outline-danger w-100">
-              <i className="bi bi-google"></i> Login with Google
-            </button>
-          </div> */}
         </form>
       </div>
     </div>

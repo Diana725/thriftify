@@ -22,7 +22,7 @@ export default function AdminOrdersPage() {
 
   // 1. Fetch all orders on mount
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/admin/orders", {
+    fetch("https://www.thriftify.website/api/admin/orders", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         Accept: "application/json",
@@ -53,7 +53,7 @@ export default function AdminOrdersPage() {
     setSavingId(orderId);
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/admin/orders/${orderId}`,
+        `https://www.thriftify.website/api/admin/orders/${orderId}`,
         {
           method: "PUT",
           headers: {

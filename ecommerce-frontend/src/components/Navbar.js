@@ -1,14 +1,13 @@
-// src/components/Navbar.js
 import React, { useState, useEffect } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import { Nav } from "react-bootstrap";
 import NotificationsBell from "./NotificationsBell";
 import AccountModal from "./AccountModal";
+import { FaChevronDown } from "react-icons/fa";
 
 const API =
-  process.env.REACT_APP_API_BASE_URL ||
-  "https://www.thriftify.website:8000/api";
+  process.env.REACT_APP_API_BASE_URL || "https://www.thriftify.website/api";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +15,9 @@ export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     Boolean(localStorage.getItem("token"))
   );
+  const [categories, setCategories] = useState([]);
+  const [catLoading, setCatLoading] = useState(true);
+  const [catError, setCatError] = useState(null);
   const [isAdmin, setIsAdmin] = useState(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     return Boolean(user.is_admin);
@@ -24,6 +26,24 @@ export default function Navbar() {
   const [cartCount, setCartCount] = useState(0);
   const [ordersCount, setOrdersCount] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let cancelled = false;
+    setCatLoading(true);
+    fetch(`${API}/categories`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then((data) => {
+        if (!cancelled) setCategories(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => !cancelled && setCatError(err))
+      .finally(() => !cancelled && setCatLoading(false));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const fetchWishlist = () => {
     const token = localStorage.getItem("token");
@@ -132,19 +152,33 @@ export default function Navbar() {
     window.dispatchEvent(new Event("logout"));
     navigate("/login");
   };
+  useEffect(() => {
+    const nav = document.querySelector(".navbar-luxe");
+    const onScroll = () => {
+      if (window.scrollY > 8) nav?.classList.add("scrolled");
+      else nav?.classList.remove("scrolled");
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <nav className="navbar navbar-expand-lg sticky-top">
+    <nav className="navbar navbar-expand-lg sticky-top navbar-luxe">
       <div className="container">
-        <Link className="navbar-brand" to="/">
+        <Link className="navbar-brand logo-type" to="/">
           Thriftify
         </Link>
-        <button className="navbar-toggler" onClick={toggleNavbar}>
+
+        <button
+          className="navbar-toggler navbar-toggler-pill"
+          onClick={toggleNavbar}
+        >
           <span className="toggler-icon">{isOpen ? "✖" : "☰"}</span>
         </button>
 
         <div className={`collapse navbar-collapse ${isOpen ? "show" : ""}`}>
-          <ul className="navbar-nav ms-auto">
+          <ul className="navbar-nav ms-auto align-items-lg-center">
             {!isAdmin ? (
               <>
                 <li className="nav-item">
@@ -158,15 +192,56 @@ export default function Navbar() {
                     Home
                   </NavLink>
                 </li>
-                <li className="nav-item">
-                  <NavLink
-                    to="/products"
-                    className={({ isActive }) =>
-                      isActive ? "nav-link active" : "nav-link"
-                    }
+                <li className="nav-item dropdown">
+                  <a
+                    href="#"
+                    className="nav-link d-inline-flex align-items-center"
+                    id="productsMenu"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    onClick={(e) => e.preventDefault()}
                   >
                     Products
-                  </NavLink>
+                    <FaChevronDown
+                      className="ms-1"
+                      style={{ fontSize: "0.8rem" }}
+                    />
+                  </a>
+                  <ul
+                    className="dropdown-menu"
+                    aria-labelledby="productsMenu"
+                    style={{ minWidth: 220 }}
+                  >
+                    <li>
+                      <NavLink
+                        to="/products"
+                        className={({ isActive }) =>
+                          isActive ? "dropdown-item active" : "dropdown-item"
+                        }
+                        onClick={() => setIsOpen(false)}
+                      >
+                        All
+                      </NavLink>
+                    </li>
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    {/* your mapped categories here */}
+                    {categories.map((cat) => (
+                      <li key={cat.id}>
+                        <NavLink
+                          to={`/products/category/${cat.id}`}
+                          className={({ isActive }) =>
+                            isActive ? "dropdown-item active" : "dropdown-item"
+                          }
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {cat.name}
+                        </NavLink>
+                      </li>
+                    ))}
+                  </ul>
                 </li>
 
                 {/* only show these when logged in */}
@@ -229,21 +304,23 @@ export default function Navbar() {
               </>
             )}
           </ul>
-
-          <div className="d-flex align-items-center ms-3">
+          <div className="d-flex align-items-center ms-lg-3 gap-2 nav-cta-group">
             {!isAuthenticated ? (
               <>
-                <Link className="btn btn-outline-terra me-2" to="/login">
+                <Link
+                  className="btn btn-outline-terra btn-pill me-0"
+                  to="/login"
+                >
                   Login
                 </Link>
-                <Link className="btn btn-primary" to="/register">
+                <Link className="btn btn-primary btn-pill" to="/register">
                   Register
                 </Link>
               </>
             ) : (
               <div className="dropdown position-relative">
                 <button
-                  className="btn btn-outline-terra dropdown-toggle"
+                  className="btn btn-outline-terra btn-pill dropdown-toggle user-toggle"
                   type="button"
                   id="userMenu"
                   data-bs-toggle="dropdown"
@@ -251,7 +328,7 @@ export default function Navbar() {
                   👤
                 </button>
                 <ul
-                  className="dropdown-menu dropdown-menu-end custom-dropdown"
+                  className="dropdown-menu dropdown-menu-end custom-dropdown rounded-4 shadow-soft"
                   aria-labelledby="userMenu"
                 >
                   <li className="nav-item">

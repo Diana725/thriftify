@@ -3,8 +3,7 @@ import { motion } from "framer-motion";
 import "./ReviewList.css";
 
 const API =
-  process.env.REACT_APP_API_BASE_URL ||
-  "https://www.thriftify.website:8000/api";
+  process.env.REACT_APP_API_BASE_URL || "https://www.thriftify.website/api";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -28,7 +27,7 @@ export default function ReviewList({ productId }) {
 
   return (
     <motion.section
-      className="reviews-section"
+      className="reviews-section mb-3"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}

@@ -1,97 +1,121 @@
-:root {
-  --font-heading: "Montserrat", sans-serif;
-  --font-body:    "Poppins", sans-serif;
-  --color-cream:  #F7F1E5;
-  --color-primary:#2A5C5B;
-  --color-secondary:#D4A259;
-  --color-terra:  #C96F56;
+/* ========= Luxe tokens (reviews scope) ========= */
+:root{
+  --cream:#F7F1E5;
+  --ink:#1E2623;
+  --muted:#58615C;
+  --line:#DED6C9;
+  --brand:#214E3A;        /* section accent */
+  --brand-300:#3F6B58;
+  --accent:#7A5E4A;       /* tiny details */
 }
 
-/* Section wrapper */
-.reviews-section {
-  background: var(--color-cream);
-  padding: 2rem 1rem;
-  font-family: var(--font-body);
+/* ===== Section wrapper ===== */
+.reviews-section{
+  margin-top: 2rem;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius: 1rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,.06);
+  padding: 1.25rem;
 }
 
-.reviews-title {
-  font-family: var(--font-heading);
-  color: var(--color-primary);
+/* ===== Heading ===== */
+.reviews-title{
+  font-family:'Montserrat',sans-serif;
+  color: var(--brand);
   text-transform: uppercase;
-  margin-bottom: 1rem;
+  letter-spacing:.4px;
+  font-size:1.1rem;
+  margin: .25rem 0 1rem 0;
 }
 
-/* Review card */
-.review-card {
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-  padding: 1rem;
-  margin-bottom: 1rem;
+/* ===== Single review card ===== */
+.review-card{
+  background:#fff;
+  border:1px solid rgba(0,0,0,.05);
+  border-radius:.9rem;
+  padding: .9rem 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,.05);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.review-card + .review-card{ margin-top: .9rem; }
+.review-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,0,0,.08);
+  border-color: rgba(0,0,0,.08);
 }
 
-.review-user {
-  font-weight: bold;
-  color: var(--color-primary);
-  margin-bottom: 0.25rem;
+/* Meta row */
+.review-user{
+  font-weight:700;
+  color: var(--ink);
+  margin:0 0 .15rem 0;
+}
+.review-date{
+  color: var(--muted);
+  font-size:.9rem;
+  margin:0 0 .35rem 0;
 }
 
-.review-date {
-  font-size: 0.85rem;
-  color: #666666;
-  margin-bottom: 0.5rem;
+/* Stars + average */
+.review-rating{
+  color:#c9a66b;                  /* soft gold for stars */
+  letter-spacing:.5px;
+  margin: 0 0 .5rem 0;
 }
 
-.review-rating {
-  color: var(--color-secondary);
-  margin-bottom: 0.5rem;
+/* Body */
+.review-text{
+  color: var(--ink);
+  line-height:1.5;
+  margin:0;
 }
 
-.review-text {
-  color: #333333;
-  line-height: 1.4;
+/* Empty state */
+.no-reviews{
+  color: var(--muted);
+  background: color-mix(in srgb, #ffffff 88%, var(--cream));
+  border:1px dashed var(--line);
+  border-radius:.9rem;
+  padding: .9rem 1rem;
+  text-align:center;
+  margin: .5rem 0 0;
 }
 
-/* No reviews message */
-.no-reviews {
-  font-style: italic;
-  color: #555555;
-  margin-top: 0.5rem;
+/* ===== Skeletons (match site shimmer) ===== */
+.skeleton-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:.9rem;
+  padding: .9rem 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,.05);
+  margin-bottom: .9rem;
 }
 
-/* --- Skeleton Shimmer --- */
-.skeleton {
-  background: #e0e0e0;
-  border-radius: 4px;
+.skeleton{
+  background:#eae7e0;
+  border-radius: 6px;
   position: relative;
   overflow: hidden;
-  margin-bottom: 0.75rem;
 }
-.skeleton::after {
-  content: "";
-  position: absolute;
-  top: 0; left: -100%;
-  width: 100%; height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255,255,255,0.4),
-    transparent
-  );
+.skeleton::after{
+  content:"";
+  position:absolute; inset:0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.45), transparent);
   animation: shimmer 1.2s infinite;
 }
-@keyframes shimmer {
-  to { transform: translateX(200%); }
-}
+@keyframes shimmer{ 100% { transform: translateX(100%); } }
 
-/* Skeleton card & shapes */
-.skeleton-card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
+/* line sizes */
+.skeleton-text{ height:14px; margin: .4rem 0; }
+.skeleton-short{ width:30%; }
+.skeleton-medium{ width:55%; }
+.skeleton-long{ width:90%; }
+
+/* ===== Responsive polish ===== */
+@media (max-width: 575.98px){
+  .reviews-section{ padding: 1rem; }
+  .review-card{ padding: .8rem .9rem; }
+  .reviews-title{ font-size:1rem; }
 }
-.skeleton-text { height: 16px; }
-.skeleton-short  { width: 30%; }
-.skeleton-medium { width: 50%; }
-.skeleton-long   { width: 90%; }

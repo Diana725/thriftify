@@ -10,6 +10,7 @@ import {
   InputGroup,
   FormControl,
   Button,
+  Modal,
 } from "react-bootstrap";
 import { motion } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
@@ -19,8 +20,7 @@ import "./ProductPage.css";
 import { AuthContext } from "../contexts/AuthContext";
 
 const API =
-  process.env.REACT_APP_API_BASE_URL ||
-  "https://www.thriftify.website:8000/api";
+  process.env.REACT_APP_API_BASE_URL || "https://www.thriftify.website/api";
 const BASEURL = API.replace("/api", "");
 
 const fadeInUp = {
@@ -33,12 +33,16 @@ export default function ProductPage() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sortOption, setSortOption] = useState("newest");
+  const [loadingState, setLoadingState] = useState({ id: null, action: null });
+
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const productsPerPage = 20;
   const { isAuthenticated, setShowAuth } = useContext(AuthContext);
   const [wishlistIds, setWishlistIds] = useState([]);
+  const [showOutOfStockModal, setShowOutOfStockModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -106,18 +110,27 @@ export default function ProductPage() {
   const pageProducts = products.slice(first, last);
   const pageCount = Math.ceil(products.length / productsPerPage);
 
-  const handleAddToCart = (id) => {
+  const handleAddToCart = (product) => {
     if (!isAuthenticated) {
       setShowAuth(true);
       return;
     }
+
+    if (product.stock_quantity <= 0) {
+      setSelectedProduct(product);
+      setShowOutOfStockModal(true);
+      return;
+    }
+
+    setLoadingState({ id: product.id, action: "cart" });
+
     fetch(`${API}/cart/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify({ product_id: id, quantity: 1 }),
+      body: JSON.stringify({ product_id: product.id, quantity: 1 }),
     })
       .then((res) => {
         if (!res.ok) throw new Error("Network response was not OK");
@@ -130,6 +143,9 @@ export default function ProductPage() {
       .catch((err) => {
         console.error("Add to cart failed:", err);
         toast.error("Failed to add to cart");
+      })
+      .finally(() => {
+        setLoadingState({ id: null, action: null });
       });
   };
 
@@ -138,6 +154,9 @@ export default function ProductPage() {
       setShowAuth(true);
       return;
     }
+
+    setLoadingState({ id, action: "wishlist" });
+
     fetch(`${API}/wishlist`, {
       method: "POST",
       headers: {
@@ -157,6 +176,9 @@ export default function ProductPage() {
       .catch((err) => {
         console.error("Add to wishlist failed:", err);
         toast.error("Failed to add to wishlist");
+      })
+      .finally(() => {
+        setLoadingState({ id: null, action: null });
       });
   };
 
@@ -195,9 +217,9 @@ export default function ProductPage() {
       variants={fadeInUp}
       style={{ minHeight: "300px" }}
     >
-      <ToastContainer position="top-right" autoClose={2000} />
+      {/* <ToastContainer position="top-right" autoClose={2000} /> */}
 
-      <Container className="py-4">
+      <Container className="py-1">
         <CategoriesGrid />
 
         <div className="search-wrapper mb-3 position-relative">
@@ -267,22 +289,65 @@ export default function ProductPage() {
                 </Col>
               ))
             : pageProducts.map((prod) => {
+                // console.log("IMAGE", JSON.stringify(prod.image_url));
                 const inWishlist = wishlistIds.includes(prod.id);
                 return (
                   <Col key={prod.id} xs={12} sm={6} md={4} lg={3}>
-                    <div className="product-card">
+                    <div
+                      className="product-card"
+                      style={{ position: "relative" }}
+                    >
+                      {/* SOLD badge */}
+                      {prod.stock_quantity <= 0 && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "8px",
+                            left: "-12px",
+                            background: "#dc3545", // Bootstrap danger
+                            color: "#fff",
+                            padding: "4px 12px",
+                            fontSize: "12px",
+                            fontWeight: 700,
+                            transform: "rotate(-15deg)",
+                            boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                            zIndex: 2,
+                            borderRadius: "4px",
+                            pointerEvents: "none",
+                            textTransform: "uppercase",
+                            letterSpacing: "1px",
+                          }}
+                        >
+                          SOLD
+                        </div>
+                      )}
                       <Link to={`/products/${prod.id}`}>
                         <img
                           src={prod.image_url}
                           alt={prod.name}
-                          className="product-image fade-image"
+                          className="product-image"
+                          onLoad={(e) =>
+                            e.currentTarget.classList.add("loaded")
+                          }
+                          onMouseEnter={(e) => {
+                            if (prod.images && prod.images[1]) {
+                              e.currentTarget.style.opacity = "0.7";
+                              e.currentTarget.src = `https://www.thriftify.website/storage/${prod.images[1].image_url}`;
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.opacity = "1";
+                            e.currentTarget.src = prod.image_url; // this is already full URL if you handled it in index
+                          }}
                           style={{
                             height: "200px",
                             objectFit: "cover",
                             width: "100%",
+                            transition: "0.3s ease-in-out",
                           }}
                         />
                       </Link>
+
                       <div className="product-body">
                         <Card.Title className="product-title">
                           {prod.name}
@@ -295,26 +360,61 @@ export default function ProductPage() {
                           >
                             View More
                           </Link>
-                          <div>
+                          <div className="d-flex gap-2">
                             <button
-                              className="btn btn-wishlist btn-sm me-2"
+                              className="btn btn-wishlist btn-sm d-flex align-items-center justify-content-center"
                               onClick={() =>
                                 !inWishlist && handleAddToWishlist(prod.id)
                               }
-                              disabled={inWishlist}
+                              disabled={
+                                inWishlist ||
+                                (loadingState.id === prod.id &&
+                                  loadingState.action === "wishlist")
+                              }
                               style={
-                                inWishlist
+                                inWishlist ||
+                                (loadingState.id === prod.id &&
+                                  loadingState.action === "wishlist")
                                   ? { opacity: 0.6, cursor: "not-allowed" }
                                   : {}
                               }
                             >
-                              ❤️
+                              {loadingState.id === prod.id &&
+                              loadingState.action === "wishlist" ? (
+                                <span
+                                  className="spinner-border spinner-border-sm"
+                                  role="status"
+                                  aria-hidden="true"
+                                ></span>
+                              ) : (
+                                "❤️"
+                              )}
                             </button>
+
                             <button
-                              className="btn btn-cart btn-sm"
-                              onClick={() => handleAddToCart(prod.id)}
+                              className="btn btn-cart btn-sm d-flex align-items-center justify-content-center"
+                              onClick={() => handleAddToCart(prod)}
+                              disabled={
+                                loadingState.id === prod.id &&
+                                loadingState.action === "cart"
+                              }
+                              style={
+                                loadingState.id === prod.id &&
+                                loadingState.action === "cart"
+                                  ? { opacity: 0.6, cursor: "not-allowed" }
+                                  : {}
+                              }
                             >
-                              🛒
+                              {loadingState.id === prod.id &&
+                              loadingState.action === "cart" ? (
+                                <span
+                                  className="spinner-border spinner-border-sm"
+                                  role="status"
+                                  aria-hidden="true"
+                                ></span>
+                              ) : (
+                                "🛒"
+                              )}
                             </button>
                           </div>
                         </div>
@@ -339,6 +439,27 @@ export default function ProductPage() {
           </Pagination>
         )}
       </Container>
+      <Modal
+        show={showOutOfStockModal}
+        onHide={() => setShowOutOfStockModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Out of Stock</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Sorry, <strong>{selectedProduct?.name}</strong> is currently out of
+          stock.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowOutOfStockModal(false)}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </motion.section>
   );
 }

@@ -16,7 +16,7 @@ export default function ReviewForm({ productId, onSaved }) {
 
   // 1) Fetch existing review (if any)
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/api/reviews?product_id=${productId}`, {
+    fetch(`https://www.thriftify.website/api/reviews?product_id=${productId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         Accept: "application/json",
@@ -43,8 +43,8 @@ export default function ReviewForm({ productId, onSaved }) {
     setError(null);
 
     const url = existingReview
-      ? `http://127.0.0.1:8000/api/reviews/${existingReview.id}`
-      : "http://127.0.0.1:8000/api/reviews";
+      ? `https://www.thriftify.website/api/reviews/${existingReview.id}`
+      : "https://www.thriftify.website/api/reviews";
     const method = existingReview ? "PUT" : "POST";
 
     try {
@@ -83,7 +83,7 @@ export default function ReviewForm({ productId, onSaved }) {
     setDeleting(true);
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/reviews/${existingReview.id}`,
+        `https://www.thriftify.website/api/reviews/${existingReview.id}`,
         {
           method: "DELETE",
           headers: {

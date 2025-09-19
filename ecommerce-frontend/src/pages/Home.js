@@ -3,6 +3,7 @@ import FeaturedProducts from "../components/Homepage/FeaturedProducts";
 import HeroBanner from "../components/Homepage/HeroBanner";
 import CategoriesGrid from "../components/Homepage/Categories";
 import TrendingProducts from "../components/Homepage/TrendingProducts";
+import OffersSection from "../components/Homepage/OffersSection";
 
 const Home = () => {
   return (
@@ -14,6 +15,7 @@ const Home = () => {
       </div> */}
 
       <HeroBanner />
+      <OffersSection />
       <CategoriesGrid />
       <FeaturedProducts />
       <TrendingProducts />

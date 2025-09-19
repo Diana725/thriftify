@@ -1,28 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import "./Categories.css";
 
-// Static imports
-import coatsImg from "../../assets/pexels-bellazhong-3782786.jpg";
-import topsImg from "../../assets/bags.jpg";
-import dressesImg from "../../assets/others.jpg";
-import gymWearImg from "../../assets/pexels-catscoming-1204464.jpg";
-import denimImg from "../../assets/sport-running-shoes.jpg";
-import defaultImg from "../../assets/watches.jpg";
-
-const imageMap = {
-  Coats: coatsImg,
-  Tops: topsImg,
-  Dresses: dressesImg,
-  "Gym Wear": gymWearImg,
-  Denim: denimImg,
-};
-
 const API =
-  process.env.REACT_APP_API_BASE_URL ||
-  "https://www.thriftify.website:8000/api";
+  process.env.REACT_APP_API_BASE_URL || "https://www.thriftify.website/api";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -33,14 +16,7 @@ export default function CategoryCarousel() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const trackRef = useRef(null);
-
-  // Preload images once at mount
-  useEffect(() => {
-    Object.values(imageMap).forEach((src) => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, []);
+  const location = useLocation();
 
   useEffect(() => {
     fetch(`${API}/categories`)
@@ -60,16 +36,29 @@ export default function CategoryCarousel() {
     });
   };
 
+  // Extract current active category ID from URL
+  const activePath = location.pathname;
+  const activeCategoryId = activePath.startsWith("/products/category/")
+    ? activePath.split("/products/category/")[1]
+    : null;
+  const isAllActive = activePath === "/products";
+
   return (
     <motion.section
       className="category-carousel-container fade-section trending-section"
       initial={false}
       animate="visible"
       variants={fadeInUp}
-      style={{ minHeight: "200px" }}
+      style={{ minHeight: "150px" }}
     >
-      <h3 className="section-title text-secondary">Shop by Category</h3>
-      <div className="carousel-wrapper">
+      <h3 className="section-title fs-2 fw-bold mb-2">Shop by Category</h3>
+      <p className="section-subtitle">Find your next thrift gem fast.</p>
+
+      <div className="carousel-wrapper rounded-4 shadow-soft glass-lite">
+        {/* edge fades for elegance */}
+        <div className="edge-fade left" aria-hidden="true" />
+        <div className="edge-fade right" aria-hidden="true" />
+
         <button
           className="carousel-btn left"
           onClick={() => scroll("left")}
@@ -79,10 +68,21 @@ export default function CategoryCarousel() {
         </button>
 
         <div className="carousel-track" ref={trackRef}>
+          {/* All Category */}
+          <Link
+            to="/products"
+            className={`category-card category-text-only category-chip ${
+              isAllActive ? "active" : ""
+            }`}
+          >
+            <div className="category-name">
+              <span className="category-label">ALL</span>
+            </div>
+          </Link>
+
           {loading
             ? Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="category-card">
-                  <div className="skeleton skeleton-image" />
+                <div key={i} className="category-card category-chip">
                   <div className="skeleton skeleton-text" />
                 </div>
               ))
@@ -90,14 +90,15 @@ export default function CategoryCarousel() {
                 <Link
                   key={cat.id}
                   to={`/products/category/${cat.id}`}
-                  className="category-card"
+                  className={`category-card category-text-only category-chip ${
+                    activeCategoryId === String(cat.id) ? "active" : ""
+                  }`}
                 >
-                  <img
-                    src={imageMap[cat.name] || defaultImg}
-                    alt={cat.name}
-                    className="category-image"
-                  />
-                  <div className="category-name">{cat.name}</div>
+                  <div className="category-name">
+                    <span className="category-label">
+                      {cat.name.toUpperCase()}
+                    </span>
+                  </div>
                 </Link>
               ))}
         </div>

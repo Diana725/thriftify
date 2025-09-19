@@ -7,7 +7,9 @@ const STORAGE_KEY = "my-notifs";
 export function NotificationProvider({ children }) {
   const [notifications, _setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [user, setUser] = useState(() =>
+    JSON.parse(localStorage.getItem("user"))
+  );
 
   // wrap setNotifications so we always persist
   const setNotifications = (next) => {
@@ -15,6 +17,14 @@ export function NotificationProvider({ children }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     setUnreadCount(next.filter((n) => !n.read).length);
   };
+  useEffect(() => {
+    const handleLogin = () => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      setUser(user);
+    };
+    window.addEventListener("login", handleLogin);
+    return () => window.removeEventListener("login", handleLogin);
+  }, []);
 
   // hydrate once on mount
   useEffect(() => {

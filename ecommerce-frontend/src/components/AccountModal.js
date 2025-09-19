@@ -41,7 +41,7 @@ export default function AccountModal({ show, handleClose }) {
     if (show) {
       setSuccessMessage("");
       setLoading(true);
-      fetch("http://3.83.97.9:8000/api/user", {
+      fetch("https://www.thriftify.website/api/user", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((res) => res.json())
@@ -66,7 +66,7 @@ export default function AccountModal({ show, handleClose }) {
   const handleSave = (e) => {
     e.preventDefault();
     setLoading(true);
-    fetch("https://www.thriftify.website:8000/api/user", {
+    fetch("https://www.thriftify.website/api/user", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -87,7 +87,7 @@ export default function AccountModal({ show, handleClose }) {
   const handleDelete = () => {
     if (!window.confirm("Really delete your account?")) return;
     setLoading(true);
-    fetch("https://www.thriftify.website:8000/api/user", {
+    fetch("https://www.thriftify.website/api/user", {
       method: "DELETE",
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })

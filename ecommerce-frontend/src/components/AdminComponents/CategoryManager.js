@@ -22,7 +22,7 @@ export default function CategoryManager({ onCategoriesChange }) {
   const [saving, setSaving] = useState(false);
   const [alert, setAlert] = useState(null);
 
-  const API = "http://127.0.0.1:8000/api";
+  const API = "https://www.thriftify.website/api";
 
   // Fetch categories
   useEffect(() => {

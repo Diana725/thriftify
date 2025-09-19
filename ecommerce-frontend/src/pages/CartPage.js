@@ -6,22 +6,30 @@ import {
   Row,
   Alert,
   Col,
+  Form,
   Image,
   Spinner,
 } from "react-bootstrap";
 import { InputGroup, FormControl } from "react-bootstrap";
 import "./CartPage.css";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const CartPage = () => {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
-  const API_BASE_URL = "https://www.thriftify.website:8000/api";
+  const API_BASE_URL = "https://www.thriftify.website/api";
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [errorMsg, setErrorMsg] = useState("");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [discountCode, setDiscountCode] = useState("");
+  const [deliveryOption, setDeliveryOption] = useState("");
+  const [shippingPhone, setShippingPhone] = useState("");
+
+  // NEW: granular loading states
+  const [removingIds, setRemovingIds] = useState(new Set());
+  const [clearing, setClearing] = useState(false);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/cart`, {
@@ -39,11 +47,12 @@ const CartPage = () => {
         setLoading(false);
       });
   }, []);
+
   const handleQuantityChange = (itemId, newQty) => {
-    if (newQty < 1) return; // don’t go below 1
+    if (newQty < 1 || clearing) return; // prevent edits during clearing
 
     fetch(`${API_BASE_URL}/cart/${itemId}`, {
-      method: "PATCH", // or "/cart/update/${itemId}" if that's your route
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -66,6 +75,13 @@ const CartPage = () => {
   };
 
   const handleRemoveItem = (id) => {
+    // mark this specific row as loading
+    setRemovingIds((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+
     fetch(`${API_BASE_URL}/cart/remove/${id}`, {
       method: "DELETE",
       headers: {
@@ -77,19 +93,36 @@ const CartPage = () => {
           ...prev,
           cart_items: prev.cart_items.filter((i) => i.id !== id),
         }));
+        // keep your existing behavior
+        window.dispatchEvent(new Event("cartUpdated"));
       })
-      .catch((error) => console.error("Error removing item:", error));
+      .catch((error) => console.error("Error removing item:", error))
+      .finally(() => {
+        // clear row loading state
+        setRemovingIds((prev) => {
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        });
+      });
   };
 
   const handleClearCart = () => {
+    setClearing(true);
+
     fetch(`${API_BASE_URL}/cart/clear`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
-      .then(() => setCart({ ...cart, cart_items: [] }))
-      .catch((error) => console.error("Error clearing cart:", error));
+      .then(() => {
+        setCart((prev) => ({ ...prev, cart_items: [] }));
+        // NEW: also notify the rest of the app (e.g., navbar count)
+        window.dispatchEvent(new Event("cartUpdated"));
+      })
+      .catch((error) => console.error("Error clearing cart:", error))
+      .finally(() => setClearing(false));
   };
 
   if (loading)
@@ -116,7 +149,16 @@ const CartPage = () => {
           product_id: item.product.id,
           quantity: item.quantity,
         })),
+        shipping_address: deliveryOption,
+        shipping_phone: shippingPhone,
+        discount_code: discountCode || null,
       };
+
+      if (!deliveryOption || !shippingPhone) {
+        toast.error("Please fill both the shipping address and phone number.");
+        setCheckoutLoading(false);
+        return;
+      }
 
       const res = await fetch(`${API_BASE_URL}/orders`, {
         method: "POST",
@@ -129,28 +171,31 @@ const CartPage = () => {
 
       const data = await res.json();
 
-      // 1️⃣ Always check for a backend "error" field first:
-      if (data.error) {
-        // specifically handle your stock error:
+      // backend-sent error message
+      if (data?.error) {
         if (data.error.startsWith("Not enough stock for")) {
           toast.error(
             `${data.error}. Please reduce the quantity or choose another product.`,
             { autoClose: 4000 }
           );
         } else {
-          // any other server-sent message
           toast.error(data.error);
         }
         return;
       }
 
-      // 2️⃣ Then check HTTP status for other non-200 codes
       if (!res.ok) {
         throw new Error("Checkout failed. Please try again.");
       }
 
-      // ✅ Success path
-      navigate(`/checkout/${data.order.id}`);
+      // ✅ accept any of these shapes: {order: {id}}, {order_id}, {id}
+      const orderId = data?.order?.id ?? data?.order_id ?? data?.id ?? null;
+
+      if (!orderId) {
+        throw new Error("Order created but missing ID in response.");
+      }
+
+      navigate(`/checkout/${orderId}`);
     } catch (err) {
       console.error(err);
       setErrorMsg(err.message);
@@ -170,14 +215,6 @@ const CartPage = () => {
   return (
     <Container className="cart-page mt-5 pt-3">
       <h2 className="mb-4">Your Shopping Cart</h2>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        pauseOnHover
-      />
 
       {errorMsg && (
         <Alert
@@ -210,6 +247,7 @@ const CartPage = () => {
                 {items.map((item) => {
                   const price = parseFloat(item.product.price).toFixed(2);
                   const subtotal = (item.quantity * price).toFixed(2);
+                  const isRemoving = removingIds.has(item.id);
 
                   return (
                     <tr key={item.id}>
@@ -233,7 +271,7 @@ const CartPage = () => {
                           <Button
                             variant="outline-secondary"
                             size="sm"
-                            disabled={item.quantity <= 1}
+                            disabled={item.quantity <= 1 || clearing}
                             onClick={() =>
                               handleQuantityChange(item.id, item.quantity - 1)
                             }
@@ -262,6 +300,7 @@ const CartPage = () => {
                               }
                             }}
                             disabled={
+                              clearing ||
                               item.quantity >= item.product.stock_quantity
                             }
                           >
@@ -276,8 +315,13 @@ const CartPage = () => {
                           variant="outline-danger"
                           size="sm"
                           onClick={() => handleRemoveItem(item.id)}
+                          disabled={isRemoving || clearing}
                         >
-                          Remove
+                          {isRemoving ? (
+                            <Spinner animation="border" size="sm" />
+                          ) : (
+                            "Remove"
+                          )}
                         </Button>
                       </td>
                     </tr>
@@ -286,6 +330,7 @@ const CartPage = () => {
               </tbody>
             </Table>
           </div>
+
           <Row className="justify-content-end">
             <Col md="4">
               <div className="d-flex justify-content-between align-items-center">
@@ -295,14 +340,56 @@ const CartPage = () => {
             </Col>
           </Row>
 
+          <Form.Group className="mb-3">
+            <Form.Label>Shipping Option*</Form.Label>
+            <Form.Select
+              value={deliveryOption}
+              onChange={(e) => setDeliveryOption(e.target.value)}
+              required
+              disabled={clearing}
+            >
+              <option value="" disabled hidden>
+                Choose delivery option
+              </option>
+              <option value="CBD Delivery">
+                CBD Delivery BebaBeba Trade Center, Stall D1(Ksh 50)
+              </option>
+              <option value="Paid custom delivery">Paid custom delivery</option>
+            </Form.Select>
+          </Form.Group>
+
+          <Form.Group controlId="shippingPhone">
+            <Form.Label>Phone Number*</Form.Label>
+            <Form.Control
+              type="tel"
+              value={shippingPhone}
+              onChange={(e) => setShippingPhone(e.target.value)}
+              placeholder="e.g. 0712345678"
+              required
+              disabled={clearing}
+            />
+          </Form.Group>
+
           <div className="d-flex justify-content-between mt-4">
-            <Button variant="outline-secondary" onClick={handleClearCart}>
-              Clear Cart
+            <Button
+              variant="outline-secondary"
+              onClick={handleClearCart}
+              disabled={clearing || items.length === 0}
+            >
+              {clearing ? (
+                <>
+                  <Spinner animation="border" size="sm" className="me-2" />
+                  Clearing…
+                </>
+              ) : (
+                "Clear Cart"
+              )}
             </Button>
+
             <Button
               variant="primary"
               onClick={handleProceedToCheckout}
-              disabled={checkoutLoading}
+              disabled={checkoutLoading || clearing}
             >
               {checkoutLoading ? "Processing…" : "Proceed to Checkout"}
             </Button>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import GoogleAuthButton from "../utils/GoogleAuthButton";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -21,22 +22,19 @@ export default function RegisterPage() {
     setIsRegistering(true);
 
     try {
-      const res = await fetch(
-        "https://www.thriftify.website:8000/api/register",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            email,
-            password,
-            password_confirmation: passwordConfirm,
-          }),
-        }
-      );
+      const res = await fetch("https://www.thriftify.website/api/register", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          password_confirmation: passwordConfirm,
+        }),
+      });
 
       const data = await res.json();
       if (!res.ok)
@@ -64,15 +62,26 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100 mt-5">
-      <div className="card shadow-lg p-4" style={{ width: "400px" }}>
-        <h2 className="text-center mb-4">Register</h2>
+    <div className="container d-flex justify-content-center align-items-center vh-100 mt-2">
+      <div className="card shadow-lg p-3" style={{ width: "400px" }}>
+        <h2 className="text-center mt-3">Register</h2>
 
         {error && <p className="text-danger text-center">{error}</p>}
         {successMessage && (
           <p className="text-success text-center">{successMessage}</p>
         )}
 
+        {/* Google first */}
+        <GoogleAuthButton />
+
+        {/* OR divider */}
+        <div className="d-flex align-items-center my-3">
+          <hr className="flex-grow-1" />
+          <span className="mx-1 text-muted">OR</span>
+          <hr className="flex-grow-1" />
+        </div>
+
+        {/* Registration form */}
         <form onSubmit={handleRegister}>
           <div className="mb-3">
             <label className="form-label">Name</label>
@@ -85,6 +94,7 @@ export default function RegisterPage() {
               required
             />
           </div>
+
           <div className="mb-3">
             <label className="form-label">Email</label>
             <input
@@ -96,6 +106,7 @@ export default function RegisterPage() {
               required
             />
           </div>
+
           <div className="mb-3">
             <label className="form-label">Password</label>
             <div className="input-group">
@@ -146,6 +157,7 @@ export default function RegisterPage() {
             {isRegistering ? "Registering…" : "Register"}
           </button>
         </form>
+
         <p className="text-center mt-3">
           Already have an account? <a href="/login">Login</a>
         </p>

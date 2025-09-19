@@ -5,20 +5,25 @@ export default function AddProduct() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [stockQuantity, setStockQuantity] = useState("");
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]); // ✅ Store up to 4 files
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   useEffect(() => {
     // Fetch categories from API
-    fetch("https://www.thriftify.website:8000/api/categories")
+    fetch("https://www.thriftify.website/api/categories")
       .then((res) => res.json())
       .then((data) => setCategories(data))
       .catch((error) => console.error("Error fetching categories:", error));
   }, []);
 
   const handleFileChange = (e) => {
-    setImage(e.target.files[0]); // Store file object
+    const files = Array.from(e.target.files); // Get all selected files
+    if (files.length > 4) {
+      alert("You can only upload up to 4 images.");
+      return;
+    }
+    setImages(files);
   };
 
   const handleSubmit = async (e) => {
@@ -29,19 +34,28 @@ export default function AddProduct() {
     formData.append("description", description);
     formData.append("price", price);
     formData.append("stock_quantity", stockQuantity);
-    formData.append("image", image); // Append image file
+
+    // Append up to 4 images
+    images.forEach((imageFile) => {
+      formData.append("images[]", imageFile);
+    });
+
+    // Append categories
     selectedCategories.forEach((category) =>
       formData.append("categories[]", category)
     );
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/products", {
-        method: "POST",
-        headers: {
-          Accept: "application/json", // ✅ This ensures Laravel returns JSON
-        },
-        body: formData, // Send form data
-      });
+      const response = await fetch(
+        "https://www.thriftify.website/api/products",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+          },
+          body: formData,
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
@@ -50,7 +64,7 @@ export default function AddProduct() {
         setDescription("");
         setPrice("");
         setStockQuantity("");
-        setImage(null);
+        setImages([]);
         setSelectedCategories([]);
       } else {
         alert(`Error: ${data.message || "Failed to add product"}`);
@@ -104,13 +118,19 @@ export default function AddProduct() {
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Image</label>
+          <label className="form-label">Images (up to 4)</label>
           <input
             type="file"
             className="form-control"
+            multiple
+            accept="image/*"
             onChange={handleFileChange}
-            required
           />
+          {images.length > 0 && (
+            <p className="mt-2 text-muted">
+              {images.length} image(s) selected.
+            </p>
+          )}
         </div>
         <div className="mb-3">
           <label className="form-label">Categories</label>

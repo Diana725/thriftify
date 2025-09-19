@@ -8,13 +8,15 @@ import {
   Card,
   Button,
   Spinner,
+  Modal,
+  ToastContainer,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import "./WishList.css";
 
 const API =
-  process.env.REACT_APP_API_BASE_URL ||
-  "https://www.thriftify.website:8000/api";
+  process.env.REACT_APP_API_BASE_URL || "https://www.thriftify.website/api";
 
 export default function WishlistPage() {
   const [items, setItems] = useState([]);
@@ -22,15 +24,21 @@ export default function WishlistPage() {
   const [search, setSearch] = useState("");
   const [reviewsMap, setReviewsMap] = useState({});
   const token = localStorage.getItem("token");
+  const [loadingState, setLoadingState] = useState({ id: null, action: null });
+
+  const [loading, setLoading] = useState(true);
+  const [showOutOfStockModal, setShowOutOfStockModal] = useState(false);
 
   // 1️⃣ load wishlist
   useEffect(() => {
+    setLoading(true); // 👈 start loading
     fetch(`${API}/wishlist`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())
       .then((data) => setItems(data))
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false)); // 👈 end loading
   }, [token]);
 
   // 2️⃣ fetch reviews for each product
@@ -79,6 +87,7 @@ export default function WishlistPage() {
 
   // 4️⃣ Remove from wishlist
   const removeFromWishlist = async (wishId) => {
+    setLoadingState({ id: wishId, action: "remove" });
     try {
       const res = await fetch(`${API}/wishlist/${wishId}`, {
         method: "DELETE",
@@ -87,13 +96,23 @@ export default function WishlistPage() {
       if (!res.ok) throw new Error();
       toast.success("Removed from wishlist");
       setItems((prev) => prev.filter((i) => i.id !== wishId));
+      window.dispatchEvent(new Event("wishlistUpdated"));
     } catch {
       toast.error("Could not remove");
+    } finally {
+      setLoadingState({ id: null, action: null });
     }
   };
 
   // 5️⃣ Move to cart
-  const moveToCart = async (productId, wishId) => {
+  const moveToCart = async (productId, wishId, stockQuantity) => {
+    if (stockQuantity <= 0) {
+      setShowOutOfStockModal(true);
+      return;
+    }
+
+    setLoadingState({ id: wishId, action: "move" });
+
     try {
       await fetch(`${API}/cart/add`, {
         method: "POST",
@@ -104,17 +123,27 @@ export default function WishlistPage() {
         body: JSON.stringify({ product_id: productId, quantity: 1 }),
       });
       toast.success("Moved to cart");
-      // Optionally remove from wishlist
+      window.dispatchEvent(new Event("cartUpdated"));
       removeFromWishlist(wishId);
     } catch (err) {
       console.error(err);
       toast.error("Failed to add to cart");
+    } finally {
+      setLoadingState({ id: null, action: null });
     }
   };
 
   return (
-    <Container className="py-4 mt-5">
+    <Container className="wishlist-page py-4 my-5">
       <h1 className="mb-4">My Wishlist</h1>
+      {/* <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnHover
+      /> */}
 
       <Form.Group className="mb-4" controlId="search">
         <Form.Control
@@ -125,7 +154,12 @@ export default function WishlistPage() {
         />
       </Form.Group>
 
-      {grouped.length === 0 ? (
+      {loading ? (
+        <div className="text-center my-5">
+          <Spinner animation="border" role="status" />
+          <div className="mt-2">Loading your wishlist…</div>
+        </div>
+      ) : grouped.length === 0 ? (
         <p>
           No items found. <Link to="/products">Browse products &rarr;</Link>
         </p>
@@ -154,7 +188,7 @@ export default function WishlistPage() {
                       <Card.Body className="d-flex flex-column">
                         <Card.Title className="fs-6">{p.name}</Card.Title>
                         <Card.Text className="mb-2">
-                          <strong>${p.price}</strong>
+                          <strong>Ksh{p.price}</strong>
                         </Card.Text>
                         {avgRating ? (
                           <Card.Text className="mb-2">
@@ -169,20 +203,58 @@ export default function WishlistPage() {
                           <Button size="sm" as={Link} to={`/products/${p.id}`}>
                             View
                           </Button>
-
                           <Button
                             size="sm"
                             variant="primary"
-                            onClick={() => moveToCart(p.id, item.id)}
+                            onClick={() =>
+                              moveToCart(p.id, item.id, p.stock_quantity)
+                            }
+                            disabled={
+                              loadingState.id === item.id &&
+                              loadingState.action === "move"
+                            }
                           >
-                            🛒 Move to Cart
+                            {loadingState.id === item.id &&
+                            loadingState.action === "move" ? (
+                              <>
+                                <Spinner
+                                  as="span"
+                                  animation="border"
+                                  size="sm"
+                                  role="status"
+                                  aria-hidden="true"
+                                />{" "}
+                                Moving...
+                              </>
+                            ) : (
+                              "🛒 Move to Cart"
+                            )}
                           </Button>
+
                           <Button
                             size="sm"
                             variant="outline-danger"
                             onClick={() => removeFromWishlist(item.id)}
+                            disabled={
+                              loadingState.id === item.id &&
+                              loadingState.action === "remove"
+                            }
                           >
-                            Remove
+                            {loadingState.id === item.id &&
+                            loadingState.action === "remove" ? (
+                              <>
+                                <Spinner
+                                  as="span"
+                                  animation="border"
+                                  size="sm"
+                                  role="status"
+                                  aria-hidden="true"
+                                />{" "}
+                                Removing...
+                              </>
+                            ) : (
+                              "Remove"
+                            )}
                           </Button>
                         </div>
                       </Card.Body>
@@ -194,6 +266,25 @@ export default function WishlistPage() {
           </section>
         ))
       )}
+
+      <Modal
+        show={showOutOfStockModal}
+        onHide={() => setShowOutOfStockModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Out of Stock</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Sorry, this product is currently out of stock.</Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowOutOfStockModal(false)}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }

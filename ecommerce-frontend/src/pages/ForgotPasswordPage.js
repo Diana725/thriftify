@@ -16,7 +16,7 @@ export default function ForgotPasswordPage() {
 
     try {
       const res = await fetch(
-        "https://www.thriftify.website:8000/api/forgot-password",
+        "https://www.thriftify.website/api/forgot-password",
         {
           method: "POST",
           headers: {

@@ -3,36 +3,35 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Modal, Form, Spinner, Badge } from "react-bootstrap";
 import CategoryManager from "../components/AdminComponents/CategoryManager";
 
+const API = "https://www.thriftify.website/api";
+
 export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]); // for multi-select
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Modal state
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
 
-  // Form state
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     price: "",
     stock_quantity: "",
     categories: [],
-    image: null,
+    images: [], // up to 4 new files
   });
 
-  // 1. Fetch products & categories on mount
   useEffect(() => {
     Promise.all([
-      fetch("http://127.0.0.1:8000/api/products").then((res) => res.json()),
-      fetch("http://127.0.0.1:8000/api/categories").then((res) => res.json()),
+      fetch(`${API}/categories`).then((res) => res.json()),
+      fetch(`${API}/products`).then((res) => res.json()),
     ])
-      .then(([productsData, cats]) => {
-        setProducts(productsData);
+      .then(([cats, productsData]) => {
         setCategories(cats);
+        setProducts(productsData);
         setLoading(false);
       })
       .catch((err) => {
@@ -42,16 +41,16 @@ export default function AdminProductsPage() {
       });
   }, []);
 
-  // 2. Handlers for Create / Edit modal
   function openCreateModal() {
     setIsEditing(false);
+    setCurrentProduct(null);
     setFormData({
       name: "",
       description: "",
       price: "",
       stock_quantity: "",
       categories: [],
-      image: null,
+      images: [],
     });
     setShowModal(true);
   }
@@ -65,17 +64,18 @@ export default function AdminProductsPage() {
       price: product.price,
       stock_quantity: product.stock_quantity,
       categories: product.categories.map((c) => c.id),
-      image: null, // only upload a new one if changed
+      images: [],
     });
     setShowModal(true);
   }
 
   function handleFormChange(e) {
     const { name, value, files } = e.target;
-    if (name === "image") {
-      setFormData((fd) => ({ ...fd, image: files[0] }));
+
+    if (name === "images") {
+      const fileList = Array.from(files).slice(0, 4); // up to 4 files
+      setFormData((fd) => ({ ...fd, images: fileList }));
     } else if (name === "categories") {
-      // handle multi-select
       const opts = Array.from(e.target.selectedOptions).map((o) => o.value);
       setFormData((fd) => ({ ...fd, categories: opts }));
     } else {
@@ -83,80 +83,73 @@ export default function AdminProductsPage() {
     }
   }
 
-  // 3. Submit handler for Create / Update
   async function handleSubmit(e) {
     e.preventDefault();
-    const url = isEditing
-      ? `http://127.0.0.1:8000/api/products/${currentProduct.id}`
-      : "http://127.0.0.1:8000/api/products";
-    // console.log("Submitting to:", url);
 
-    const method = "POST";
+    const url = isEditing
+      ? `${API}/products/${currentProduct.id}`
+      : `${API}/products`;
     const body = new FormData();
+
+    body.append("name", formData.name);
+    body.append("description", formData.description);
+    body.append("price", formData.price);
+    body.append("stock_quantity", formData.stock_quantity);
+    formData.categories.forEach((category) =>
+      body.append("categories[]", category)
+    );
+    formData.images.forEach((img) => body.append("images[]", img));
     if (isEditing) body.append("_method", "PUT");
-    Object.entries(formData).forEach(([key, val]) => {
-      if (val !== null) {
-        if (Array.isArray(val)) {
-          val.forEach((v) => body.append("categories[]", v));
-        } else {
-          body.append(key, val);
-        }
-      }
-    });
 
     try {
       const res = await fetch(url, {
-        method,
+        method: "POST",
         headers: {
-          // no Content-Type header when sending FormData
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           Accept: "application/json",
-          "X-Requested-With": "XMLHttpRequest",
         },
         body,
       });
-      if (!res.ok) throw new Error("Validation or server error");
+
+      if (!res.ok) throw new Error("Save failed");
       const saved = await res.json();
 
-      // Update local list
-      setProducts((list) => {
-        if (isEditing) {
-          return list.map((p) => (p.id === saved.id ? saved : p));
-        }
-        return [saved, ...list];
-      });
+      setProducts((list) =>
+        isEditing
+          ? list.map((p) => (p.id === saved.id ? saved : p))
+          : [saved, ...list]
+      );
       setShowModal(false);
-    } catch (err) {
-      console.error(err);
-      alert("Save failed: " + err.message);
+    } catch (error) {
+      console.error(error);
+      alert(`Error saving product: ${error.message}`);
     }
   }
 
-  // 4. Delete handler
   async function handleDelete(id) {
     if (!window.confirm("Delete this product?")) return;
+
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/products/${id}`, {
+      const res = await fetch(`${API}/products/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
+
       if (!res.ok) throw new Error("Delete failed");
       setProducts((list) => list.filter((p) => p.id !== id));
-    } catch (err) {
-      console.error(err);
-      alert("Delete failed");
+    } catch (error) {
+      console.error(error);
+      alert(`Delete failed: ${error.message}`);
     }
   }
 
-  // 5. Render
   if (loading) return <Spinner animation="border" />;
   if (error) return <p className="text-danger">{error}</p>;
 
   return (
     <div className="container mt-5 pt-5">
       <CategoryManager onCategoriesChange={setCategories} />
+
       <h2>Manage Products</h2>
       <Button className="mb-3" onClick={openCreateModal}>
         + New Product
@@ -165,7 +158,7 @@ export default function AdminProductsPage() {
       <Table striped bordered hover responsive>
         <thead>
           <tr>
-            <th>Image</th>
+            <th>Images</th>
             <th>Name</th>
             <th>Description</th>
             <th>Price</th>
@@ -178,11 +171,22 @@ export default function AdminProductsPage() {
           {products.map((p) => (
             <tr key={p.id}>
               <td>
-                {p.image_url ? (
-                  <img src={p.image_url} alt="" width={50} />
-                ) : (
-                  <span className="text-muted">—</span>
-                )}
+                <div className="d-flex flex-wrap" style={{ gap: "0.25rem" }}>
+                  {p.images?.length ? (
+                    p.images.map((img) => (
+                      <img
+                        key={img.id}
+                        src={`https://www.thriftify.website/storage/${img.image_url}`}
+                        width={50}
+                        height={50}
+                        style={{ objectFit: "cover" }}
+                        alt={p.name}
+                      />
+                    ))
+                  ) : (
+                    <span className="text-muted">—</span>
+                  )}
+                </div>
               </td>
               <td>{p.name}</td>
               <td>{p.description}</td>
@@ -212,7 +216,7 @@ export default function AdminProductsPage() {
         </tbody>
       </Table>
 
-      {/* Create/Edit Modal */}
+      {/* Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Form onSubmit={handleSubmit} encType="multipart/form-data">
           <Modal.Header closeButton>
@@ -221,6 +225,7 @@ export default function AdminProductsPage() {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            {/* Name */}
             <Form.Group className="mb-2">
               <Form.Label>Name</Form.Label>
               <Form.Control
@@ -230,7 +235,7 @@ export default function AdminProductsPage() {
                 required
               />
             </Form.Group>
-
+            {/* Description */}
             <Form.Group className="mb-2">
               <Form.Label>Description</Form.Label>
               <Form.Control
@@ -241,7 +246,7 @@ export default function AdminProductsPage() {
                 onChange={handleFormChange}
               />
             </Form.Group>
-
+            {/* Price */}
             <Form.Group className="mb-2">
               <Form.Label>Price</Form.Label>
               <Form.Control
@@ -253,7 +258,7 @@ export default function AdminProductsPage() {
                 required
               />
             </Form.Group>
-
+            {/* Stock */}
             <Form.Group className="mb-2">
               <Form.Label>Stock Quantity</Form.Label>
               <Form.Control
@@ -264,32 +269,50 @@ export default function AdminProductsPage() {
                 required
               />
             </Form.Group>
-
+            {/* Categories */}
             <Form.Group className="mb-2">
               <Form.Label>Categories</Form.Label>
               <Form.Select
-                name="categories"
                 multiple
+                name="categories"
                 value={formData.categories}
                 onChange={handleFormChange}
                 required
               >
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
                   </option>
                 ))}
               </Form.Select>
             </Form.Group>
-
+            {/* Images */}
             <Form.Group className="mb-2">
-              <Form.Label>Image</Form.Label>
+              <Form.Label>Images (up to 4)</Form.Label>
               <Form.Control
                 type="file"
-                name="image"
+                name="images"
+                multiple
                 accept="image/*"
                 onChange={handleFormChange}
               />
+              {isEditing && currentProduct?.images?.length > 0 && (
+                <div
+                  className="mt-2 d-flex flex-wrap"
+                  style={{ gap: "0.5rem" }}
+                >
+                  {currentProduct.images.map((img) => (
+                    <img
+                      key={img.id}
+                      src={img.image_url}
+                      width={50}
+                      height={50}
+                      style={{ objectFit: "cover" }}
+                      alt="Current image"
+                    />
+                  ))}
+                </div>
+              )}
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>

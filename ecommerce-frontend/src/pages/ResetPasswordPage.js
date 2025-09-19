@@ -32,7 +32,7 @@ export default function ResetPasswordPage() {
 
     try {
       const res = await fetch(
-        "https://www.thriftify.website:8000/api/reset-password",
+        "https://www.thriftify.website/api/reset-password",
         {
           method: "POST",
           headers: {

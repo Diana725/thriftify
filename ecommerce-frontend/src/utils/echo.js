@@ -12,7 +12,7 @@ window.Echo = new Echo({
   cluster: "mt1", // your PUSHER_APP_CLUSTER
   forceTLS: true,
   encrypted: true,
-  authEndpoint: "https://www.thriftify.website:8000/broadcasting/auth",
+  authEndpoint: "https://www.thriftify.website/broadcasting/auth",
   auth: {
     headers: {
       Authorization: `Bearer ${token}`,

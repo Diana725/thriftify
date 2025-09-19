@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
-import { Container, Row, Col, Modal, Button } from "react-bootstrap";
+import { useParams, Link } from "react-router-dom";
+import { Container, Row, Col, Modal, Button, Carousel } from "react-bootstrap";
 import AddToWishlistButton from "./AddToWishlistButton";
 import ReviewList from "./ReviewList";
 import RelatedProducts from "./RelatedProducts";
@@ -10,13 +10,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../contexts/AuthContext";
 
 const API =
-  process.env.REACT_APP_API_BASE_URL ||
-  "https://www.thriftify.website:8000/api";
+  process.env.REACT_APP_API_BASE_URL || "https://www.thriftify.website/api";
 
 export default function ProductDetails() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [cartLoading, setCartLoading] = useState(false);
+
   const [showOutOfStockModal, setShowOutOfStockModal] = useState(false);
   const { isAuthenticated, setShowAuth } = useContext(AuthContext);
 
@@ -27,6 +28,46 @@ export default function ProductDetails() {
       .catch((err) => console.error("Fetch error:", err))
       .finally(() => setLoading(false));
   }, [id]);
+
+  const shareUrl = `${window.location.origin}/products/${id}`;
+
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: product.name,
+          text: `${product.name} — Ksh ${product.price}`,
+          url: shareUrl,
+        });
+        return;
+      }
+
+      // Fallback: copy to clipboard
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success("Link copied to clipboard");
+        return;
+      }
+
+      // Last-resort fallback (HTTP / older browsers)
+      const tmp = document.createElement("input");
+      tmp.value = shareUrl;
+      document.body.appendChild(tmp);
+      tmp.select();
+      document.execCommand("copy");
+      document.body.removeChild(tmp);
+      toast.success("Link copied to clipboard");
+    } catch (err) {
+      console.error(err);
+      // Try copying if share failed mid-flight
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success("Link copied to clipboard");
+      } catch {
+        toast.error("Couldn’t share the link.");
+      }
+    }
+  };
 
   if (loading) {
     // Skeleton layout
@@ -68,11 +109,12 @@ export default function ProductDetails() {
       return;
     }
 
-    // out-of-stock guard
     if (product.stock_quantity <= 0) {
       setShowOutOfStockModal(true);
       return;
     }
+
+    setCartLoading(true);
 
     fetch(`${API}/cart/add`, {
       method: "POST",
@@ -87,21 +129,39 @@ export default function ProductDetails() {
         window.dispatchEvent(new Event("cartUpdated"));
         toast.success("Added to Cart!");
       })
-      .catch(() => toast.error("Failed to add to Cart"));
+      .catch(() => toast.error("Failed to add to Cart"))
+      .finally(() => setCartLoading(false));
   };
 
   return (
-    <Container className="product-details py-4">
+    <Container className="product-details py-4 mb-5">
       <Row className="align-items-center">
         <Col md={6}>
-          <img
-            src={product.image_url}
-            alt={product.name}
-            className="img-fluid rounded shadow fade-image"
-            loading="lazy"
-            onLoad={(e) => e.currentTarget.classList.add("loaded")}
-          />
+          {/* Images collage (replace the Carousel block with this) */}
+          <div className="gallery-collage shadow rounded-4">
+            {(product.images?.length
+              ? product.images
+              : [{ image_url: "/images/placeholder.png" }]
+            )
+              .slice(0, 4)
+              .map((img, i) => (
+                <div
+                  key={i}
+                  className={`gallery-cell ${i === 0 ? "hero" : ""}`}
+                >
+                  <img
+                    src={img.image_url}
+                    alt={`${product.name} ${i + 1}`}
+                    className="gallery-img fade-image"
+                    loading="lazy"
+                    decoding="async"
+                    onLoad={(e) => e.currentTarget.classList.add("loaded")}
+                  />
+                </div>
+              ))}
+          </div>
         </Col>
+
         <Col md={6}>
           <h2 className="product-title">{product.name}</h2>
           <p className="product-price">Ksh {product.price}</p>
@@ -122,23 +182,28 @@ export default function ProductDetails() {
             <span className="average-text">({avg} out of 5)</span>
           </div>
 
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            pauseOnHover
-          />
-
           <div className="d-flex gap-2 mt-3">
-            <button className="btn btn-theme" onClick={handleAddToCart}>
-              🛒 Add to Cart
+            <button
+              className="btn btn-theme"
+              onClick={handleAddToCart}
+              disabled={cartLoading}
+              style={cartLoading ? { opacity: 0.6, cursor: "not-allowed" } : {}}
+            >
+              {cartLoading ? "Adding To Cart..." : "🛒 Add to Cart"}
             </button>
+
             <AddToWishlistButton
               productId={product.id}
-              onSuccess={() => toast.success("Added to cart!")}
+              className="add-to-wishlist-btn"
             />
+
+            <button
+              className="btn btn-outline-secondary btn-share"
+              onClick={handleShare}
+              title="Share product"
+            >
+              🔗 Share
+            </button>
           </div>
         </Col>
       </Row>
@@ -166,6 +231,10 @@ export default function ProductDetails() {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Button as={Link} to="/products" variant="secondary">
+        ← Back to Products
+      </Button>
     </Container>
   );
 }

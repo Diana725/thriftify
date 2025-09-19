@@ -1,0 +1,89 @@
+/* ---------- Palette (Offers scope only) ---------- */
+:root {
+  --color-cream: #F7F1E5;   /* keep */
+  --color-primary: #214E3A; /* deep forest (text/links) */
+  --color-secondary: #3F6B58; /* forest accent for primary buttons */
+  --color-terra: #7A5E4A;   /* cognac accent (lines/underlines, subtle pills) */
+}
+
+/* Section background to match hero shell */
+.offers-section { background: var(--color-cream); }
+
+/* Heading + subtitle */
+.offers-heading {
+  font-family: var(--font-display, 'Montserrat', sans-serif);
+  letter-spacing:.2px;
+  color: var(--color-primary);
+}
+.offers-subtitle { color:#6b7280; }
+
+/* Soft shadow token */
+.shadow-soft { box-shadow: 0 6px 24px rgba(0,0,0,.06); }
+
+/* Offer card: luxe surface + hover lift */
+.offer-card {
+  background:#fff;
+  border:1px solid rgba(0,0,0,.06);
+  transition: transform .2s ease, box-shadow .22s ease, border-color .2s ease;
+}
+.offer-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0,0,0,.08);
+  border-color: rgba(0,0,0,.08);
+}
+
+/* Icon pill (uses luxe palette) */
+.offer-icon {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:44px; height:44px; border-radius:999px;
+  background: color-mix(in srgb, var(--color-secondary) 16%, #ffffff);
+  border:1px solid color-mix(in srgb, var(--color-secondary) 42%, transparent);
+  color: var(--color-primary);
+  font-size:1.1rem;
+}
+
+/* Title scale/legibility */
+.offer-title { color: var(--color-primary); font-size:1.08rem; line-height:1.25; }
+
+/* ---------- CTAs (now on-brand) ---------- */
+/* Primary (deep forest) */
+.btn-offers-primary {
+  background: var(--color-secondary) !important; /* forest accent */
+  color: #fff !important;
+  border-radius:999px;
+  padding:.65rem 1.1rem;
+  font-weight:600;
+  border: none !important;
+  transition: transform .15s ease, opacity .2s ease;
+}
+.btn-offers-primary:hover { opacity:.96; transform: translateY(-1px); }
+.btn-offers-primary:active { transform: translateY(0); }
+
+/* Ghost (white surface with champagne border) */
+.btn-offers-ghost {
+  background:#fff !important;
+  color: var(--color-primary) !important;
+  border-radius:999px;
+  padding:.62rem 1rem;
+  border:1px solid #DED6C9 !important; /* champagne line */
+  transition: background-color .2s ease, transform .15s ease, border-color .2s ease;
+}
+.btn-offers-ghost:hover {
+  background:#f7f7f7 !important;
+  border-color:#d1c7b7 !important;
+  transform: translateY(-1px);
+}
+
+/* Focus rings for a11y */
+.btn-offers-primary:focus-visible,
+.btn-offers-ghost:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-secondary) 35%, transparent);
+  outline-offset: 2px;
+}
+
+/* Small screens */
+@media (max-width: 768px) {
+  .offer-card .card-body { padding:1.1rem; }
+  .offer-title { font-size:1rem; }
+  .btn-offers-primary, .btn-offers-ghost { padding:.55rem .9rem; }
+}

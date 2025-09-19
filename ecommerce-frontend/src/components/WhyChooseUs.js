@@ -1,5 +1,5 @@
 import React from "react";
-import { CurrencyDollar, Recycle, StarFill } from "react-bootstrap-icons";
+import { CurrencyDollar, Shop, StarFill } from "react-bootstrap-icons";
 import "./WhyChooseUs.css";
 
 const features = [
@@ -12,10 +12,10 @@ const features = [
   },
   {
     id: 2,
-    icon: <Recycle size={40} className="feature-icon" />,
-    title: "Sustainable Fashion",
+    icon: <Shop size={40} className="feature-icon" />,
+    title: "Support A Local Business",
     description:
-      "Support eco-friendly shopping by giving clothes a second life and reducing waste.",
+      "Empower a small, local seller by shopping from your community and helping businesses grow.",
   },
   {
     id: 3,
@@ -28,18 +28,21 @@ const features = [
 
 const WhyChooseUs = () => {
   return (
-    <div className="why-choose-container">
-      <h2 className="section-title">🌟 Why Choose Us?</h2>
+    <section className="why-choose-container">
+      <h2 className="why-title">🌟 Why Choose Us?</h2>
+      {/* Optional subtitle: remove if you don't want it */}
+      {/* <p className="why-subtitle">Hand-picked thrift. Honest prices. Boutique experience.</p> */}
+
       <div className="features-grid">
         {features.map((feature) => (
-          <div key={feature.id} className="feature-card">
-            {feature.icon}
+          <div key={feature.id} className="feature-card shadow-soft">
+            <div className="icon-pill">{feature.icon}</div>
             <h3 className="feature-title">{feature.title}</h3>
             <p className="feature-description">{feature.description}</p>
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -1,0 +1,247 @@
+/* ========= Luxe tokens (wishlist scope) ========= */
+:root{
+  --cream:#F7F1E5;
+  --ink:#1E2623;
+  --muted:#58615C;
+  --line:#DED6C9;          /* champagne border */
+  --brand:#214E3A;         /* headings/price accents */
+  --cta:#4E5A56;           /* neutral outline CTA */
+  --cta-700:#3F4845;       /* hover fill */
+  --cta-300:#717C78;       /* focus ring */
+  --danger:#C94F4F;        /* refined red */
+  --danger-600:#B74444;    /* hover */
+}
+
+/* ===== Page shell ===== */
+.wishlist-page{
+  background: var(--cream);
+}
+
+/* Heading */
+.wishlist-page h1{
+  font-family:'Montserrat',sans-serif;
+  color: var(--brand);
+  text-transform: uppercase;
+  letter-spacing:.45px;
+  font-size:1.35rem;
+  margin-bottom:1rem !important;
+}
+
+/* ===== Search ===== */
+.wishlist-page .form-control{
+  background: color-mix(in srgb, #ffffff 88%, var(--cream));
+  border:1px solid var(--line);
+  border-radius: 999px;
+  padding:.65rem 1rem;
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+}
+.wishlist-page .form-control:focus{
+  border-color: var(--line);
+  box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--cream) 35%, transparent);
+}
+
+/* ===== Section headings (group title per category) ===== */
+.wishlist-page section > h3{
+  font-family:'Poppins',sans-serif;
+  color: var(--ink);
+  font-weight:700;
+  letter-spacing:.2px;
+  margin-bottom:.6rem !important;
+}
+
+/* ===== Cards ===== */
+.wishlist-page .card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:1rem;
+  overflow:hidden;
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.wishlist-page .card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.10);
+  border-color:#d9d0c4;
+}
+
+/* Image */
+.wishlist-page .card-img-top,
+.wishlist-page .card img.card-img-top{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  display:block;
+  background:#fff;
+}
+
+/* Text */
+.wishlist-page .card-title{
+  color: var(--ink);
+  line-height:1.25;
+  margin-bottom:.25rem;
+}
+.wishlist-page .card .text-muted{ color: var(--muted) !important; }
+.wishlist-page .card strong{ color: var(--brand); }
+
+/* ===== Button styles ===== */
+
+/* View (ghost) */
+.wishlist-page a.btn.btn-sm{
+  background:#fff;
+  color: var(--ink);
+  border:1px solid var(--line);
+  border-radius:999px;
+  font-weight:600;
+  padding:.42rem .9rem;
+  transition: background-color .2s ease, transform .15s ease, border-color .2s ease, color .2s ease;
+  text-decoration:none;
+}
+.wishlist-page a.btn.btn-sm:hover{
+  background:#f7f7f7; color: var(--ink) !important; border-color:#d1c7b7; transform: translateY(-1px);
+}
+
+/* Move to Cart (neutral outline → fill) */
+.wishlist-page .btn.btn-primary{
+  background: transparent;
+  color: var(--cta);
+  border:1.5px solid var(--cta);
+  border-radius:999px;
+  font-weight:700;
+  padding:.42rem .9rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  transition: background-color .2s ease, color .2s ease, transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.wishlist-page .btn.btn-primary:hover{
+  background: var(--cta);
+  color:#fff;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.12);
+}
+.wishlist-page .btn.btn-primary:disabled{
+  background:transparent; color:#8A8275; border-color:#DDD3C6; box-shadow:none; cursor:not-allowed;
+}
+
+/* Remove (refined danger outline → fill) */
+.wishlist-page .btn.btn-outline-danger{
+  background:#fff;
+  color: var(--danger);
+  border:1.5px solid var(--danger);
+  border-radius:999px;
+  font-weight:700;
+  padding:.42rem .9rem;
+  box-shadow: 0 6px 18px rgba(201,79,79,.10);
+  transition: background-color .2s ease, color .2s ease, transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.wishlist-page .btn.btn-outline-danger:hover{
+  background: var(--danger);
+  color:#fff;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(201,79,79,.18);
+}
+
+/* Spinner niceties inside small buttons */
+.wishlist-page .btn .spinner-border{ width:1rem; height:1rem; }
+
+/* ===== Empty state & loading ===== */
+.wishlist-page .text-center .spinner-border{ color: var(--brand); }
+.wishlist-page p a{ color: var(--brand); text-decoration: none; }
+.wishlist-page p a:hover{ color: var(--brand); text-decoration: underline; }
+
+/* ===== Responsive polish ===== */
+@media (max-width: 575.98px){
+  .wishlist-page h1{ font-size:1.15rem; }
+  .wishlist-page .card-img-top{ height:180px; }
+}
+
+/* -------- Hard reset for buttons in Wishlist (scope only) -------- */
+.wishlist-page .btn {
+  /* cancel any global round/circle styles */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto !important;
+  height: auto !important;
+  min-width: unset !important;
+  min-height: unset !important;
+  border-radius: 999px;           /* pill, not a circle */
+  padding: .42rem .9rem;          /* normal size */
+  line-height: 1.2;
+  white-space: nowrap;            /* keep text on one line */
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+}
+
+/* View (ghost) */
+.wishlist-page a.btn.btn-sm {
+  background: #fff !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
+}
+.wishlist-page a.btn.btn-sm:hover {
+  background: #f7f7f7 !important;
+  border-color: #d1c7b7 !important;
+}
+
+/* Move to Cart — outline → filled on hover (beats global .btn-primary !important) */
+.wishlist-page .btn.btn-primary {
+  background: transparent !important;
+  color: var(--cta) !important;
+  border: 1.5px solid var(--cta) !important;
+}
+.wishlist-page .btn.btn-primary:hover {
+  background: var(--cta) !important;
+  color: #fff !important;
+}
+
+/* Remove — refined danger outline → filled on hover */
+.wishlist-page .btn.btn-outline-danger {
+  background: #fff !important;
+  color: var(--danger) !important;
+  border: 1.5px solid var(--danger) !important;
+}
+.wishlist-page .btn.btn-outline-danger:hover {
+  background: var(--danger) !important;
+  color: #fff !important;
+}
+
+/* optional: keep small spinner tidy */
+.wishlist-page .btn .spinner-border { width: 1rem; height: 1rem; }
+
+/* Make the card body a flex column so the actions stay inside */
+.wishlist-page .card .card-body{
+  display:flex;
+  flex-direction:column;
+  padding: 1rem;              /* more breathing room so pills don't touch the radius */
+  min-width: 0;               /* allow flex children to shrink */
+}
+
+/* Target your existing action row: <div class="mt-auto d-flex gap-2"> */
+.wishlist-page .card .mt-auto.d-flex{
+  flex-wrap: wrap;            /* <-- allow wrapping */
+  gap: .6rem;                 /* matches the pills gap */
+  justify-content: flex-start;
+  margin-top: auto;           /* keeps row at the bottom of the card */
+}
+
+/* Make buttons fluid and prevent overflow */
+.wishlist-page .card .mt-auto.d-flex > .btn{
+  flex: 1 1 calc(50% - .6rem);  /* 2 per row by default */
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* “View” can be shorter; “Move to Cart” can grow */
+.wishlist-page .card .mt-auto.d-flex > a.btn{ flex: 0 1 120px; }
+.wishlist-page .card .mt-auto.d-flex > .btn.btn-primary{ flex: 1 1 220px; }
+
+/* On small phones, stack one per line for zero cut-offs */
+@media (max-width: 480px){
+  .wishlist-page .card .mt-auto.d-flex > .btn{
+    flex: 1 1 100%;
+  }
+}
+
+/* If the rounded card clips intense shadows, reduce clipping without losing rounded corners */
+.wishlist-page .card{
+  overflow: visible;          /* allow pill shadows to render outside */
+}
+.wishlist-page .card .card-img-top{ border-top-left-radius: 1rem; border-top-right-radius: 1rem; }
