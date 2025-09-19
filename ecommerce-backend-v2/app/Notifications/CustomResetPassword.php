@@ -15,6 +15,11 @@ class CustomResetPassword extends Notification
         $this->token = $token;
     }
 
+ public function via($notifiable)
+    {
+        return ['mail'];
+    }
+
     public function toMail($notifiable)
     {
         // Build a front-end URL if you want SPA flow:

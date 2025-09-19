@@ -14,22 +14,24 @@ class CartController extends Controller
 public function index()
 {
     $cart = Cart::where('user_id', Auth::id())
-                ->with('cartItems.product')
+                ->with('cartItems.product.images')
                 ->first();
-    
-    if (! $cart) {
-        return response()->json(['message' => 'Cart is empty'], 200);
+
+    if (!$cart) {
+        return response()->json(['message' => 'Cart not found'], 404);
     }
 
-    // Assetify each product’s image_url
+    // Set product image_url for each cart item
     $cart->cartItems->each(function ($item) {
-        $item->product->image_url = $item->product->image_url
-            ? asset("storage/{$item->product->image_url}")
+        $firstImage = $item->product->images->first();
+        $item->product->image_url = $firstImage
+            ? asset('storage/' . $firstImage->image_url)
             : null;
     });
 
     return response()->json($cart);
 }
+
 
 
     // Add item to cart

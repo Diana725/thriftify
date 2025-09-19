@@ -34,5 +34,16 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
+    'google' => [
+    	'client_id'     => env('GOOGLE_CLIENT_ID'),
+    	'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+    	'redirect'      => env('GOOGLE_REDIRECT_URI'),
+    ],
+'intasend' => [
+    'base_url'      => env('INTASEND_BASE_URL', 'https://sandbox.intasend.com/api/v1'),
+    'public_key'    => env('INTASEND_PUBLIC_KEY'),
+    'secret_key'    => env('INTASEND_SECRET_KEY'),
+    'callback_url'  => env('INTASEND_CALLBACK_URL'),
+    'redirect_url'  => env('INTASEND_REDIRECT_URL'),
+],
 ];

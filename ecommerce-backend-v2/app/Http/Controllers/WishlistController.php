@@ -12,19 +12,21 @@ class WishlistController extends Controller
     // Get all wishlist items for the authenticated user
     public function index()
 {
-    $wishlist = Wishlist::with('product.categories')
+    $wishlist = Wishlist::with('product.categories', 'product.images')
         ->where('user_id', Auth::id())
         ->get();
 
-    // Convert the stored image path into a full URL
+    // Convert the product image into a full URL
     $wishlist->each(function ($item) {
-        $item->product->image_url = $item->product->image_url
-            ? asset("storage/{$item->product->image_url}")
+        $firstImage = $item->product->images->first();
+        $item->product->image_url = $firstImage
+            ? asset('storage/' . $firstImage->image_url)
             : null;
     });
 
     return response()->json($wishlist);
 }
+
 
 
     // Add a product to wishlist

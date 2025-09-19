@@ -11,79 +11,73 @@ class ProductController extends Controller
     // Fetch all products
     public function index()
 {
-    $products = Product::with('categories')->get();
+    $products = Product::with('categories', 'images')->get();
 
-    foreach ($products as $product) {
-        $product->image_url = $product->image_url ? asset("storage/{$product->image_url}") : null;
-    }
+    $products->transform(function ($product) {
+        $firstImage = $product->images->first();
+        $product->image_url = $firstImage ? asset('storage/' . $firstImage->image_url) : null;
+        return $product;
+    });
 
     return response()->json($products);
 }
 
-    
-
     // Store a new product
     public function store(Request $request)
 {
-    // Validate incoming data
     $request->validate([
         'name'           => 'required|string|max:255',
         'description'    => 'nullable|string',
         'price'          => 'required|numeric',
         'stock_quantity' => 'required|integer|min:0',
-        'image'          => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'images'         => 'nullable|array',
+        'images.*'       => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         'categories'     => 'required|array',
         'categories.*'   => 'exists:categories,id',
     ]);
 
-    // Handle image upload
-    $imagePath = null;
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')
-                             ->store('images', 'public');
-    }
+    $product = Product::create(
+        $request->only('name','description','price','stock_quantity')
+    );
 
-    // Create the product
-    $product = Product::create([
-        'name'           => $request->name,
-        'description'    => $request->description,
-        'price'          => $request->price,
-        'stock_quantity' => $request->stock_quantity,
-        'image_url'      => $imagePath,
-    ]);
-
-    // Attach categories
     $product->categories()->attach($request->categories);
 
-    // Return the newly created product with its categories
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $imageFile) {
+            $imagePath = $imageFile->store('images', 'public');
+
+            $product->images()->create([
+                'image_url' => $imagePath,
+            ]);
+        }
+    }
+
     return response()->json(
-        $product->load('categories'),
+        $product->load('categories', 'images'),
         201
     );
 }
 
-    
 
     // Show a single product
    public function show($id)
 {
-    $product = Product::with('categories')
-                     ->with('reviews')       // eager-load if you need count
+    $product = Product::with('categories', 'images', 'reviews')
                      ->find($id);
 
     if (!$product) {
-      return response()->json(['message'=>'Product not found'],404);
+        return response()->json(['message' => 'Product not found'], 404);
     }
 
-    $product->image_url = $product->image_url
-        ? asset("storage/{$product->image_url}")
-        : null;
+    // Make all image URLs accessible
+    foreach ($product->images as $image) {
+        $image->image_url = asset('storage/' . $image->image_url);
+    }
 
-    // now $product->average_rating is available
     return response()->json($product);
 }
 
-    
+
 
     // Update a product
     public function update(Request $request, $id)
@@ -94,41 +88,52 @@ class ProductController extends Controller
     }
 
     $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'price' => 'required|numeric',
+        'name'           => 'required|string|max:255',
+        'description'    => 'nullable|string',
+        'price'          => 'required|numeric',
         'stock_quantity' => 'required|integer|min:0',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        'categories' => 'required|array',
-        'categories.*' => 'exists:categories,id'
+        'images'         => 'nullable|array',
+        'images.*'       => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        'categories'     => 'required|array',
+        'categories.*'   => 'exists:categories,id',
     ]);
 
-    if ($request->hasFile('image')) {
-        // Delete old image
-        if ($product->image_url) {
-            Storage::disk('public')->delete($product->image_url);
-        }
+    // Update product
+    $product->update(
+        $request->only('name','description','price','stock_quantity')
+    );
 
-        // Upload new image
-        $imagePath = $request->file('image')->store('images', 'public');
-        $product->image_url = $imagePath;
-    }
-
-    $product->update($request->only(['name', 'description', 'price', 'stock_quantity']));
-
-    // Sync categories
     $product->categories()->sync($request->categories);
 
-    return response()->json($product->load('categories'));
+    // Handle new images
+    if ($request->hasFile('images')) {
+        // Delete old images
+        foreach ($product->images as $img) {
+            Storage::disk('public')->delete($img->image_url);
+            $img->delete();
+        }
+
+        // Store new images
+        foreach ($request->file('images') as $imageFile) {
+            $imagePath = $imageFile->store('images', 'public');
+            $product->images()->create([
+                'image_url' => $imagePath,
+            ]);
+        }
+    }
+
+    return response()->json($product->load('categories','images'));
 }
+
+
+
+   
 
 public function relatedProducts($id)
 {
-    // Find the current product (or 404)
     $product = Product::with('categories')->findOrFail($id);
 
-    // Fetch up to 4 other products sharing any of the same categories
-    $related = Product::with('categories')
+    $related = Product::with('categories', 'images')
         ->whereHas('categories', function ($query) use ($product) {
             $query->whereIn('categories.id', $product->categories->pluck('id'));
         })
@@ -136,11 +141,9 @@ public function relatedProducts($id)
         ->limit(4)
         ->get();
 
-    // Convert each image_url path into a full URL
     $related->transform(function ($item) {
-        $item->image_url = $item->image_url
-            ? asset("storage/{$item->image_url}")
-            : null;
+        $firstImage = $item->images->first();
+        $item->image_url = $firstImage ? asset('storage/' . $firstImage->image_url) : null;
         return $item;
     });
 
@@ -149,45 +152,53 @@ public function relatedProducts($id)
 
 
 
-
     // Delete a product
     public function destroy($id)
-    {
-        $product = Product::findOrFail($id);
+{
+    $product = Product::findOrFail($id);
 
-        // Delete associated image
-        if ($product->image_url) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $product->image_url));
-        }
-
-        $product->delete();
-        return response()->json(['message' => 'Product deleted successfully']);
+    // Delete all associated images
+    foreach ($product->images as $img) {
+        Storage::disk('public')->delete($img->image_url);
+        $img->delete();
     }
+
+    $product->delete();
+
+    return response()->json(['message' => 'Product deleted successfully']);
+}
+
 
     //Mark Product as Trending
    public function trending()
 {
-    // ensures you always get a Collection (array) back
-    $items = Product::where('is_trending', true)
-                    ->take(10)
-                    ->get();
+    $items = Product::with('images')
+        ->where('is_trending', true)
+        ->take(10)
+        ->get();
+
+    $items->transform(function ($item) {
+        $firstImage = $item->images->first();
+        $item->image_url = $firstImage ? asset('storage/' . $firstImage->image_url) : null;
+        return $item;
+    });
 
     return response()->json($items);
 }
+
 public function search(Request $request)
 {
     $q = $request->query('q', '');
 
-    $products = Product::where('name', 'like', "%{$q}%")
+    $products = Product::with('images')
+        ->where('name', 'like', "%{$q}%")
         ->orderBy('name')
         ->limit(10)
         ->get();
 
-    // Turn each image_url into a full URL
-    $products->transform(function($p) {
-        $p->image_url = $p->image_url
-            ? asset("storage/{$p->image_url}")
-            : null;
+    $products->transform(function ($p) {
+        $firstImage = $p->images->first();
+        $p->image_url = $firstImage ? asset('storage/' . $firstImage->image_url) : null;
         return $p;
     });
 

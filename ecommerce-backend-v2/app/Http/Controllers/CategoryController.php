@@ -26,19 +26,26 @@ class CategoryController extends Controller
    public function productsByCategory($id)
 {
     $category = Category::findOrFail($id);
-    $products = Product::with('categories')
+
+    $products = Product::with(['categories', 'images']) // load images too
         ->whereHas('categories', function ($q) use ($id) {
             $q->where('categories.id', $id);
         })
         ->get();
 
     $products->transform(function ($product) {
-        $product->image_url = url('storage/' . ltrim($product->image_url, '/'));
+        $firstImage = $product->images->first();
+
+        $product->image_url = $firstImage
+            ? url('storage/' . ltrim($firstImage->image_url, '/'))
+            : url('images/default.jpg'); // fallback image
+
         return $product;
     });
 
     return response()->json($products);
 }
+
 
     
     // Create a new category (Admin only)

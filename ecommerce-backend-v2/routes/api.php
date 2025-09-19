@@ -11,12 +11,14 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\GoogleAuthController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Password;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -35,6 +37,14 @@ Route::post('/products', [ProductController::class, 'store']);
 Route::get('/categories', [CategoryController::class, 'index']); 
 Route::get('/categories/{id}', [CategoryController::class, 'show']); 
 Route::get('/categories/{id}/products', [CategoryController::class, 'productsByCategory']);
+
+//Payment Callback
+Route::post('/payments/callback', [PaymentController::class, 'paymentCallback']);
+
+//google login
+Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
+Route::post('/auth/google/token-login', [GoogleAuthController::class, 'loginWithGoogleToken']);
 
 // Reviews
 Route::get('/products/{product_id}/reviews', [ReviewController::class, 'index']);
@@ -137,11 +147,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/orders', [OrderController::class, 'userOrders']); // Get user's orders
     Route::get('/orders/{id}', [OrderController::class, 'show']); //Return a single order
 Route::patch('/orders/{id}', [OrderController::class, 'update']); //update shipping details
-
+Route::post('/orders/{order}/request-cancel', [OrderController::class, 'requestCancel']);
+Route::post('orders/{order}/resume', [OrderController::class, 'resume']);
 
     // Payments
     Route::post('/payments/initiate', [PaymentController::class, 'createPayment']); // Start payment
-    Route::get('/payments/callback', [PaymentController::class, 'paymentCallback']); // Verify payment
+
 
      // Reviews
      Route::get('/reviews', [ReviewController::class, 'show']);
