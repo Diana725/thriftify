@@ -15,6 +15,7 @@
 /* ===== Page shell ===== */
 .wishlist-page{
   background: var(--cream);
+   border-radius: 20px;
 }
 
 /* Heading */

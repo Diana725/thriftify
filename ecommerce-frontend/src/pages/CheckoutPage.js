@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Card, Button, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
+import "./CheckoutPage.css";
 
 const API =
   process.env.REACT_APP_API_BASE_URL || "https://www.thriftify.website/api";
@@ -124,7 +125,7 @@ export default function CheckoutPage() {
   const total = Number(order.total_amount || 0);
 
   return (
-    <Container className="py-4">
+    <Container className="py-3 my-4 checkout-page">
       <h1 className="mb-4 mt-5">Checkout</h1>
       <Row className="mb-4">
         <Col md={8}>
@@ -143,8 +144,8 @@ export default function CheckoutPage() {
         </Col>
 
         <Col md={4}>
-          <Card>
-            <Card.Body>
+          <Card className="summary-card">
+            <Card.Body className="summary">
               {Array.isArray(order.applied_discounts) &&
                 order.applied_discounts.length > 0 && (
                   <div className="mb-3">
@@ -182,7 +183,12 @@ export default function CheckoutPage() {
                 </p>
               )}
 
-              <h2 className="text-primary">Total: Ksh{total.toFixed(2)}</h2>
+              <div className="summary-total">
+                <span>
+                  <strong>Total</strong>
+                </span>
+                <h2 className="text-primary mb-0">Ksh{total.toFixed(2)}</h2>
+              </div>
 
               <Button
                 variant="success"

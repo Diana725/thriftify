@@ -1,0 +1,139 @@
+/* ========= Luxe tokens (modal scope) ========= */
+:root{
+  --cream:#F7F1E5;
+  --ink:#1E2623;
+  --muted:#58615C;
+  --line:#DED6C9;
+  --brand:#214E3A;
+  --brand-600:#1B3F2F;
+  --cta:#4E5A56;
+  --cta-700:#3F4845;
+  --cta-300:#717C78;
+}
+
+/* Modal surface */
+.auth-modal {
+  background: #fff !important; /* use content panel below */
+}
+.auth-modal .modal-content{
+  background: #fff !important;
+  border:1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 18px 48px rgba(0,0,0,.14);
+  overflow: hidden;
+}
+
+/* Header */
+.auth-modal .modal-header{
+  border-bottom:1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  background: color-mix(in srgb, #ffffff 90%, var(--cream));
+}
+.auth-modal .modal-title{
+  font-family:'Montserrat',sans-serif;
+  color: var(--brand);
+  letter-spacing:.3px;
+}
+
+/* Tabs */
+.auth-modal .nav-tabs{
+  border-bottom:1px solid color-mix(in srgb, var(--line) 70%, transparent);
+}
+.auth-modal .nav-tabs .nav-link{
+  border: none !important;
+  color: var(--muted);
+  font-weight:600;
+  padding:.6rem .9rem;
+  position: relative;
+}
+.auth-modal .nav-tabs .nav-link.active,
+.auth-modal .nav-tabs .nav-link:hover{
+  color: var(--brand);
+}
+.auth-modal .nav-tabs .nav-link.active::after,
+.auth-modal .nav-tabs .nav-link:hover::after{
+  content:"";
+  position:absolute; left:.8rem; right:.8rem; bottom:-1px;
+  height:2px; background: var(--brand);
+  border-radius: 2px;
+}
+
+/* Google button (optional) */
+.auth-modal .google-btn{
+  width:100%;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:#fff;
+  padding:.65rem 1rem;
+  font-weight:700;
+  color: var(--ink);
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  transition: transform .15s ease, background-color .2s ease, border-color .2s ease;
+}
+.auth-modal .google-btn:hover{
+  background:#f7f7f7; transform: translateY(-1px);
+}
+
+/* Divider */
+.auth-modal .or-divider hr{ border-color: var(--line); opacity:.8; }
+
+/* Inputs */
+.auth-modal .auth-input{
+  background: color-mix(in srgb, #ffffff 88%, var(--cream));
+  border:1px solid var(--line);
+  border-radius: 999px;
+  padding:.65rem 1rem;
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+}
+.auth-modal .auth-input:focus{
+  border-color: var(--line);
+  box-shadow: 0 0 0 .22rem color-mix(in srgb, var(--cream) 40%, transparent);
+}
+
+/* InputGroup */
+.auth-modal .auth-input-group .form-control{
+  border-right: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.auth-modal .reveal-toggle{
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border:1px solid var(--line) !important;
+  background:#fff !important;
+  color: var(--muted) !important;
+}
+.auth-modal .reveal-toggle:hover{
+  background:#f7f7f7 !important;
+}
+
+/* Primary submit */
+.auth-modal .btn-auth-primary{
+  background: var(--brand);
+  color:#fff;
+  border:none;
+  border-radius:999px;
+  padding:.75rem 1.1rem;
+  font-weight:800;
+  box-shadow: 0 10px 26px rgba(33,78,58,.18);
+  transition: transform .15s ease, background-color .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+.auth-modal .btn-auth-primary:hover{
+  background: var(--brand-600);
+  transform: translateY(-1px);
+}
+
+/* Generic bootstrap Button inside modal (fallback) */
+.auth-modal .btn{
+  font-weight:700;
+}
+
+/* Close button tone */
+.auth-modal .btn-close{
+  filter: brightness(0) saturate(100%) invert(13%) sepia(9%) saturate(743%) hue-rotate(107deg) brightness(97%) contrast(93%);
+}
+
+/* Small screens */
+@media (max-width: 480px){
+  .auth-modal .modal-content{ border-radius: 14px; }
+  .auth-modal .nav-tabs .nav-link{ padding:.5rem .6rem; }
+}

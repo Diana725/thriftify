@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../contexts/AuthContext";
+import "./ProductDetails.css";
 
 const API_BASE_URL =
   process.env.REACT_APP_API_BASE_URL || "https://www.thriftify.website/api";
@@ -83,6 +84,7 @@ export default function AddToWishlistButton({ productId, onSuccess }) {
       variant={added ? "danger" : "outline-danger"}
       onClick={addToWishlist}
       disabled={loading || added}
+      className="add-to-wishlist-btn"
     >
       {added ? "In Wishlist" : loading ? "Adding…" : "❤️ Add to Wishlist"}
     </Button>

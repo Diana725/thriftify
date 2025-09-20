@@ -158,6 +158,14 @@ export default function AppRoutes() {
             }
           />
           <Route
+            path="/password/reset/:token"
+            element={
+              <AnimatedPage>
+                <ResetPasswordPage />
+              </AnimatedPage>
+            }
+          />
+          <Route
             path="/reset-password"
             element={
               <AnimatedPage>

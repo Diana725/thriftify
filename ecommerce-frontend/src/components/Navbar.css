@@ -87,7 +87,7 @@
   border-color: var(--color-secondary) !important;
   color: var(--color-cream) !important;
 }
-.btn-primary:hover { background-color: #1B3F2F !important; } /* darker forest */
+.btn-primary:hover { background-color: #1B3F2F !important; border: 1px solid #1B3F2F !important;} /* darker forest */
 .btn-outline-terra {
   border-color: var(--color-terra) !important;
   color: var(--color-terra) !important;
@@ -107,7 +107,7 @@
 }
 .navbar .nav-item .badge {
   position: absolute;
-  top: -6px; right: -8px;
+  top: -3px; right: -5px;
   min-width: 1.25rem; height: 1.25rem; line-height: 1.25rem;
   padding: 0 .35rem; border-radius: 999px;
   font-size: .72rem;
@@ -134,6 +134,7 @@
     box-shadow: 0 8px 22px rgba(0,0,0,.08);
   }
   .nav-cta-group { width: 100%; justify-content: flex-start; margin-top: .25rem; }
+
 }
 @media (max-width: 768px) {
   .custom-dropdown { min-width: 180px; }

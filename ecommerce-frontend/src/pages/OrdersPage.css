@@ -1,0 +1,140 @@
+/* ========= Luxe tokens (orders scope) ========= */
+:root{
+  --cream:#F7F1E5;
+  --ink:#1E2623;
+  --muted:#58615C;
+  --line:#DED6C9;
+  --brand:#214E3A;        /* deep forest */
+  --brand-600:#1B3F2F;
+  --cta:#4E5A56;          /* neutral slate */
+  --cta-300:#717C78;      /* focus/tints */
+}
+
+/* Page shell */
+.orders-page{
+  background: var(--cream);
+  font-family: 'Poppins', sans-serif;
+  border-radius: 20px;
+}
+
+/* Title */
+.orders-page h1{
+  font-family:'Montserrat',sans-serif;
+  color: var(--brand);
+  text-transform: uppercase;
+  letter-spacing:.45px;
+  margin-bottom:1rem;
+}
+.view-more:hover{
+    text-decoration: none !important;
+    border: 1px solid #C94F4F !important;
+    background-color: #C94F4F !important;
+}
+/* Filter buttons */
+.orders-page .btn{
+  border-radius: 999px;
+  font-weight:700;
+}
+
+.orders-page .btn-primary{
+  background: var(--brand);
+  border-color: var(--brand);
+  color:#fff;
+  box-shadow: 0 10px 24px rgba(33,78,58,.15);
+}
+.orders-page .btn-primary:hover{
+  background: var(--brand-600);
+  border-color: var(--brand-600);
+}
+
+.orders-page .btn-outline-secondary{
+  color: var(--cta);
+  border-color: var(--cta);
+  background:#fff;
+}
+.orders-page .btn-outline-secondary:hover{
+  background: var(--cta);
+  color:#fff;
+}
+
+/* Sort dropdown */
+.orders-page .dropdown-toggle{
+  border-radius:999px;
+  border-color: var(--line);
+  color: var(--ink);
+  background:#fff;
+}
+.orders-page .dropdown-menu{
+  border:1px solid var(--line);
+  box-shadow: 0 12px 28px rgba(0,0,0,.08);
+  border-radius:.75rem;
+}
+
+/* Cards */
+.orders-page .card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:1rem;
+  overflow:hidden;
+  box-shadow: 0 10px 28px rgba(0,0,0,.08);
+}
+
+.orders-page .card-header,
+.orders-page .card-footer{
+  background: color-mix(in srgb, #ffffff 86%, var(--cream));
+  border-color: var(--line);
+}
+
+.orders-page .card-header strong{ color: var(--brand); }
+.orders-page .text-muted{ color: var(--muted) !important; }
+
+/* Progress bar (Bootstrap) */
+.orders-page .progress{
+  height: .9rem;
+  background: #eee7da;
+  border-radius: 999px;
+  overflow: hidden;
+  border:1px solid var(--line);
+}
+.orders-page .progress-bar{
+  background: linear-gradient(90deg, var(--brand) 0%, var(--brand-600) 100%);
+  font-size:.7rem;
+  font-weight:800;
+}
+
+/* Item list */
+.orders-page .list-group-item{
+  border-color: var(--line);
+}
+.orders-page img.img-fluid{
+  border-radius:.5rem;
+  border:1px solid var(--line);
+  background:#fff;
+}
+
+/* Footer CTA */
+.orders-page .card-footer .btn{
+  border-radius:999px;
+  font-weight:800;
+}
+
+/* Alerts & links */
+.orders-page .alert-info{
+  background: color-mix(in srgb, #ffffff 86%, var(--cream));
+  border-color: var(--line);
+  color: var(--ink);
+}
+.orders-page a{
+  color: var(--brand);
+  text-decoration:none;
+}
+.orders-page a:hover{ text-decoration:underline; }
+
+/* Responsive polish */
+@media (max-width: 575.98px){
+  .orders-page h1{ font-size:1.2rem; }
+  .orders-page .card-header .row > .col:last-child{
+    margin-top:.35rem;
+    text-align:left !important;
+  }
+}

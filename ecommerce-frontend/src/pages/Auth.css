@@ -1,0 +1,133 @@
+/* ========= Luxe tokens (auth scope) ========= */
+:root{
+  --cream:#F7F1E5;
+  --ink:#1E2623;
+  --muted:#58615C;
+  --line:#DED6C9;
+  --brand:#214E3A;       /* deep forest */
+  --brand-600:#1B3F2F;
+  --cta:#4E5A56;         /* slate */
+  --cta-300:#717C78;     /* focus ring */
+}
+
+/* Page background */
+.auth-page{
+  background: radial-gradient(1200px 800px at 15% 10%, rgba(33,78,58,.06), transparent 60%),
+              radial-gradient(900px 700px at 90% 80%, rgba(33,78,58,.04), transparent 60%),
+              var(--cream);
+  padding: 1rem;
+}
+
+/* Card (glass + soft border) */
+.auth-card{
+  width: min(420px, 92vw);
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, #ffffff 88%, var(--cream));
+  backdrop-filter: saturate(115%) blur(6px);
+  box-shadow: 0 18px 48px rgba(0,0,0,.10);
+  padding: 1.25rem !important;
+}
+
+/* Title */
+.auth-title{
+  font-family: 'Montserrat', sans-serif;
+  color: var(--brand);
+  text-transform: uppercase;
+  letter-spacing: .45px;
+}
+
+/* Inputs */
+.auth-input{
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: .75rem .9rem;
+  color: var(--ink);
+  box-shadow: 0 8px 22px rgba(0,0,0,.06);
+}
+.auth-input:focus{
+  border-color: var(--line);
+  box-shadow: 0 0 0 .18rem color-mix(in srgb, var(--cream) 40%, transparent);
+  outline: none;
+}
+
+/* Password reveal pill */
+.auth-input-group .reveal-toggle{
+  border: 1px solid var(--line);
+  border-left: none;
+  background: #fff;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 0 12px 12px 0;
+  transition: background-color .2s ease, color .2s ease;
+}
+.auth-input-group .reveal-toggle:hover{ background: #f8f6f2; color: var(--ink); }
+
+/* Primary CTA */
+.btn-auth-primary{
+  border-radius: 999px !important;
+  font-weight: 800 !important;
+  background: #D4A259 !important;
+  border-color: #D4A259 !important;
+  color: #fff !important;
+  padding: .75rem 1rem !important;
+  box-shadow: 0 14px 32px rgba(33,78,58,.20) !important;
+  transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease !important;
+}
+.btn-auth-primary:hover{
+  background: var(--brand-600) !important;
+  border-color: var(--brand-600) !important;
+  transform: translateY(-1px);
+}
+
+/* Links */
+.auth-link{
+  color: var(--cta);
+  text-decoration: none;
+}
+.auth-link:hover{ color: var(--brand); text-decoration: underline; }
+
+.auth-link-strong{
+  color: var(--brand);
+  font-weight: 700;
+  text-decoration: none;
+}
+.auth-link-strong:hover{ color: var(--brand-600); text-decoration: underline; }
+
+/* OR divider */
+.or-divider hr{
+  border-top: 1px solid var(--line);
+}
+
+/* GoogleAuthButton wrapper (if your component doesn't style itself) */
+.auth-card .google-btn, .auth-card button.google-btn{
+  width: 100%;
+  border-radius: 999px;
+  font-weight: 700;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  padding: .7rem 1rem;
+  box-shadow: 0 8px 22px rgba(0,0,0,.06);
+  transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease;
+}
+.auth-card .google-btn:hover{
+  background:#f7f7f7;
+  transform: translateY(-1px);
+}
+
+/* Small screens */
+@media (max-width: 575.98px){
+  .auth-card{ padding: 1rem !important; }
+}
+/* Auth.css (shared) */
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.85rem;
+  transform: translateY(-10%);
+  cursor: pointer;
+  color: var(--muted, #6b7280);
+}
+.password-toggle:hover { color: var(--ink, #1E2623); }

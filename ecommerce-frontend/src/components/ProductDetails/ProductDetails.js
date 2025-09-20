@@ -21,6 +21,29 @@ export default function ProductDetails() {
   const [showOutOfStockModal, setShowOutOfStockModal] = useState(false);
   const { isAuthenticated, setShowAuth } = useContext(AuthContext);
 
+  const [isLightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  const openLightbox = (i) => {
+    setLightboxIndex(i);
+    setLightboxOpen(true);
+  };
+  const closeLightbox = () => setLightboxOpen(false);
+  const prevImg = () =>
+    setLightboxIndex((i) => (i - 1 + imgs.length) % imgs.length);
+  const nextImg = () => setLightboxIndex((i) => (i + 1) % imgs.length);
+
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowLeft") prevImg();
+      if (e.key === "ArrowRight") nextImg();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isLightboxOpen]);
+
   useEffect(() => {
     fetch(`${API}/products/${id}`)
       .then((res) => res.json())
@@ -33,10 +56,12 @@ export default function ProductDetails() {
 
   const handleShare = async () => {
     try {
+      const shareTitle = product ? product.name : "Check this out";
+      const shareText = product ? `${product.name} — Ksh ${product.price}` : "";
       if (navigator.share) {
         await navigator.share({
-          title: product.name,
-          text: `${product.name} — Ksh ${product.price}`,
+          title: shareTitle,
+          text: shareText,
           url: shareUrl,
         });
         return;
@@ -69,6 +94,15 @@ export default function ProductDetails() {
     }
   };
 
+  // put near the top of the component (after useState/useContext)
+  const imgs = React.useMemo(() => {
+    const list =
+      Array.isArray(product?.images) && product?.images.length
+        ? product.images
+        : [{ image_url: "/images/placeholder.png" }];
+    return list.slice(0, 8);
+  }, [product]);
+
   if (loading) {
     // Skeleton layout
     return (
@@ -100,7 +134,7 @@ export default function ProductDetails() {
       </Container>
     );
   }
-  const avg = product.average_rating; // e.g. 4.2
+  const avg = Number(product?.average_rating ?? 0);
   const fullStars = Math.floor(avg);
   const halfStar = avg - fullStars >= 0.5;
   const handleAddToCart = () => {
@@ -139,26 +173,25 @@ export default function ProductDetails() {
         <Col md={6}>
           {/* Images collage (replace the Carousel block with this) */}
           <div className="gallery-collage shadow rounded-4">
-            {(product.images?.length
-              ? product.images
-              : [{ image_url: "/images/placeholder.png" }]
-            )
-              .slice(0, 4)
-              .map((img, i) => (
-                <div
-                  key={i}
-                  className={`gallery-cell ${i === 0 ? "hero" : ""}`}
-                >
-                  <img
-                    src={img.image_url}
-                    alt={`${product.name} ${i + 1}`}
-                    className="gallery-img fade-image"
-                    loading="lazy"
-                    decoding="async"
-                    onLoad={(e) => e.currentTarget.classList.add("loaded")}
-                  />
-                </div>
-              ))}
+            {imgs.slice(0, 4).map((img, i) => (
+              <button
+                key={i}
+                type="button"
+                className={`gallery-cell ${i === 0 ? "hero" : ""}`}
+                onClick={() => openLightbox(i)} // <-- opens the lightbox
+                aria-label="Open image"
+                style={{ all: "unset", cursor: "zoom-in", display: "block" }}
+              >
+                <img
+                  src={img.image_url}
+                  alt={`${product.name} ${i + 1}`}
+                  className="gallery-img fade-image"
+                  loading="lazy"
+                  decoding="async"
+                  onLoad={(e) => e.currentTarget.classList.add("loaded")}
+                />
+              </button>
+            ))}
           </div>
         </Col>
 
@@ -211,6 +244,59 @@ export default function ProductDetails() {
       {/* Reviews & Related */}
       <ReviewList productId={id} />
       <RelatedProducts productId={id} />
+
+      {isLightboxOpen && (
+        <div
+          className="lb-overlay"
+          onClick={closeLightbox}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="lb-dialog" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="lb-close"
+              onClick={closeLightbox}
+              aria-label="Close"
+            >
+              ×
+            </button>
+
+            <button
+              className="lb-nav prev"
+              onClick={prevImg}
+              aria-label="Previous"
+            >
+              ‹
+            </button>
+            <figure className="lb-figure">
+              <img
+                src={imgs[lightboxIndex].image_url}
+                alt={`Zoomed: ${product.name}`}
+                className="lb-image"
+                loading="eager"
+              />
+            </figure>
+            <button className="lb-nav next" onClick={nextImg} aria-label="Next">
+              ›
+            </button>
+
+            <div className="lb-thumbs">
+              {imgs.map((m, tIdx) => (
+                <button
+                  key={tIdx}
+                  className={`lb-thumb ${
+                    tIdx === lightboxIndex ? "is-active" : ""
+                  }`}
+                  onClick={() => setLightboxIndex(tIdx)}
+                  aria-label={`View image ${tIdx + 1}`}
+                >
+                  <img src={m.image_url} alt="" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Out-Of-Stock Modal */}
       <Modal

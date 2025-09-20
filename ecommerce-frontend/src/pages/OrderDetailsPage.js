@@ -15,6 +15,7 @@ import {
 } from "react-bootstrap";
 import { toast } from "react-toastify";
 import ReviewForm from "../components/ReviewForm";
+import "./OrderDetailsPage.css";
 
 const API =
   process.env.REACT_APP_API_BASE_URL || "https://www.thriftify.website/api";
@@ -96,11 +97,9 @@ export default function OrderDetailsPage() {
   const progress = ((stepIndex + 1) / STATUS_STEPS.length) * 100;
 
   return (
-    <Container className="py-4 mt-5">
+    <Container className="py-4 mt-5 mb-5 order-details">
       <h1>Order #{order.id}</h1>
-      <p className="text-muted">
-        {new Date(order.created_at).toLocaleString()}
-      </p>
+      <p className="meta">{new Date(order.created_at).toLocaleString()}</p>
 
       <ProgressBar
         now={progress}
@@ -125,75 +124,69 @@ export default function OrderDetailsPage() {
         </Card>
       )}
 
-      <Card className="mb-4">
+      <Card className="mb-4 order-card">
         <Card.Header>Items</Card.Header>
         <ListGroup variant="flush">
-          {items.map((item) => (
-            <React.Fragment key={item.id}>
-              <ListGroup.Item>
-                <Row className="align-items-center">
-                  <Col md={2}>
-                    <div
-                      className="d-flex flex-wrap"
-                      style={{ gap: "0.25rem" }}
-                    >
-                      {item.product.images && item.product.images.length > 0 ? (
-                        item.product.images.map((img, index) => (
-                          <img
-                            key={index}
-                            src={img.image_url}
-                            alt={`${item.product.name} image ${index + 1}`}
-                            className="img-fluid rounded"
-                            style={{
-                              width: "45px",
-                              height: "45px",
-                              objectFit: "cover",
-                            }}
-                          />
-                        ))
-                      ) : (
-                        <img
-                          src="/placeholder.png"
-                          alt="No image available"
-                          className="img-fluid rounded"
-                          style={{
-                            width: "45px",
-                            height: "45px",
-                            objectFit: "cover",
-                          }}
-                        />
-                      )}
-                    </div>
-                  </Col>
+          {items.map((item) => {
+            const imgs = item.product.images || [];
+            // choose collage density class by count (optional but nice)
+            const collageClass =
+              imgs.length >= 4
+                ? "four"
+                : imgs.length === 3
+                ? "three"
+                : imgs.length === 2
+                ? "two"
+                : "";
+            return (
+              <React.Fragment key={item.id}>
+                <ListGroup.Item className="order-item">
+                  <Row className="align-items-center g-3">
+                    <Col md={2}>
+                      <div className={`thumb-collage ${collageClass}`}>
+                        {(imgs.length
+                          ? imgs
+                          : [{ image_url: "/placeholder.png" }]
+                        )
+                          .slice(0, 4)
+                          .map((img, index) => (
+                            <img
+                              key={index}
+                              src={img.image_url}
+                              alt={`${item.product.name} ${index + 1}`}
+                            />
+                          ))}
+                      </div>
+                    </Col>
 
-                  <Col md={5}>{item.product.name}</Col>
-                  <Col md={2}>
-                    {item.quantity} × Ksh{parseFloat(item.price).toFixed(2)}
-                  </Col>
-                  <Col md={3}>
-                    Ksh{(item.quantity * parseFloat(item.price)).toFixed(2)}
-                  </Col>
-                </Row>
-              </ListGroup.Item>
-
-              {order.order_status === "delivered" && (
-                <ListGroup.Item>
-                  <ReviewForm
-                    productId={item.product.id}
-                    onSaved={() => {
-                      /* optionally re-fetch product ratings or
-                         update parent state if needed */
-                    }}
-                  />
+                    <Col md={5}>{item.product.name}</Col>
+                    <Col md={2} className="order-line-price">
+                      {item.quantity} × Ksh{parseFloat(item.price).toFixed(2)}
+                    </Col>
+                    <Col md={3} className="order-line-subtotal">
+                      Ksh{(item.quantity * parseFloat(item.price)).toFixed(2)}
+                    </Col>
+                  </Row>
                 </ListGroup.Item>
-              )}
-            </React.Fragment>
-          ))}
+
+                {order.order_status === "delivered" && (
+                  <ListGroup.Item className="order-item">
+                    <ReviewForm
+                      productId={item.product.id}
+                      onSaved={() => {}}
+                    />
+                  </ListGroup.Item>
+                )}
+              </React.Fragment>
+            );
+          })}
         </ListGroup>
-        <Card.Footer className="text-end">
-          <strong>Total: </strong>Ksh{parseFloat(order.total_amount).toFixed(2)}
+        <Card.Footer className="text-end order-total">
+          <strong>Total: </strong>
+          Ksh{parseFloat(order.total_amount).toFixed(2)}
         </Card.Footer>
       </Card>
+
       {["pending", "processing"].includes(order.order_status) && (
         <div className="mb-3 text-end">
           <Button

@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import GoogleAuthButton from "../utils/GoogleAuthButton";
+import "./Auth.css";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -62,9 +63,9 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100 mt-2">
-      <div className="card shadow-lg p-3" style={{ width: "400px" }}>
-        <h2 className="text-center mt-3">Register</h2>
+    <div className="auth-page d-flex justify-content-center align-items-center vh-80">
+      <div className="auth-card card p-4 shadow-lg">
+        <h2 className="auth-title text-center mb-3">Create Account</h2>
 
         {error && <p className="text-danger text-center">{error}</p>}
         {successMessage && (
@@ -72,12 +73,15 @@ export default function RegisterPage() {
         )}
 
         {/* Google first */}
-        <GoogleAuthButton />
+        <div className="mb-3">
+          <GoogleAuthButton />{" "}
+          {/* add className="google-btn" inside if needed */}
+        </div>
 
         {/* OR divider */}
-        <div className="d-flex align-items-center my-3">
+        <div className="or-divider d-flex align-items-center my-3">
           <hr className="flex-grow-1" />
-          <span className="mx-1 text-muted">OR</span>
+          <span className="mx-2 text-muted">OR</span>
           <hr className="flex-grow-1" />
         </div>
 
@@ -87,7 +91,7 @@ export default function RegisterPage() {
             <label className="form-label">Name</label>
             <input
               type="text"
-              className="form-control"
+              className="form-control auth-input"
               placeholder="Enter your name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -99,7 +103,7 @@ export default function RegisterPage() {
             <label className="form-label">Email</label>
             <input
               type="email"
-              className="form-control"
+              className="form-control auth-input"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -109,19 +113,20 @@ export default function RegisterPage() {
 
           <div className="mb-3">
             <label className="form-label">Password</label>
-            <div className="input-group">
+            <div className="input-group auth-input-group">
               <input
                 type={showPassword ? "text" : "password"}
-                className="form-control"
+                className="form-control auth-input"
                 placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
               <span
-                className="input-group-text"
-                style={{ cursor: "pointer" }}
+                className="input-group-text reveal-toggle"
                 onClick={() => setShowPassword((v) => !v)}
+                role="button"
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
@@ -130,19 +135,22 @@ export default function RegisterPage() {
 
           <div className="mb-3">
             <label className="form-label">Confirm Password</label>
-            <div className="input-group">
+            <div className="input-group auth-input-group">
               <input
                 type={showConfirmPassword ? "text" : "password"}
-                className="form-control"
+                className="form-control auth-input"
                 placeholder="Confirm password"
                 value={passwordConfirm}
                 onChange={(e) => setPasswordConfirm(e.target.value)}
                 required
               />
               <span
-                className="input-group-text"
-                style={{ cursor: "pointer" }}
+                className="input-group-text reveal-toggle"
                 onClick={() => setShowConfirmPassword((v) => !v)}
+                role="button"
+                aria-label={
+                  showConfirmPassword ? "Hide password" : "Show password"
+                }
               >
                 {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
@@ -151,16 +159,19 @@ export default function RegisterPage() {
 
           <button
             type="submit"
-            className="btn btn-primary w-100"
+            className="btn btn-auth-primary w-100"
             disabled={isRegistering}
           >
             {isRegistering ? "Registering…" : "Register"}
           </button>
-        </form>
 
-        <p className="text-center mt-3">
-          Already have an account? <a href="/login">Login</a>
-        </p>
+          <div className="text-center mt-3">
+            <span className="text-muted me-1">Already have an account?</span>
+            <Link to="/login" className="auth-link-strong">
+              Log in
+            </Link>
+          </div>
+        </form>
       </div>
     </div>
   );

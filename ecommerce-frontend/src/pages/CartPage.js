@@ -213,7 +213,7 @@ const CartPage = () => {
     .toFixed(2);
 
   return (
-    <Container className="cart-page mt-5 pt-3">
+    <Container className="cart-page mt-5 mb-5 pb-3 pt-3">
       <h2 className="mb-4">Your Shopping Cart</h2>
 
       {errorMsg && (
@@ -331,9 +331,9 @@ const CartPage = () => {
             </Table>
           </div>
 
-          <Row className="justify-content-end">
+          <Row className="justify-content-end mt-3">
             <Col md="4">
-              <div className="d-flex justify-content-between align-items-center">
+              <div className="summary-row d-flex justify-content-between align-items-center">
                 <h5 className="mb-0">Total:</h5>
                 <h4 className="mb-0">Ksh{total}</h4>
               </div>
@@ -390,6 +390,7 @@ const CartPage = () => {
               variant="primary"
               onClick={handleProceedToCheckout}
               disabled={checkoutLoading || clearing}
+              className="proceed"
             >
               {checkoutLoading ? "Processing…" : "Proceed to Checkout"}
             </Button>

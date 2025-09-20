@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import GoogleAuthButton from "../utils/GoogleAuthButton";
+import "./Auth.css";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -41,16 +42,19 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-4 shadow-lg" style={{ width: "400px" }}>
-        <h2 className="text-center mb-3">Login</h2>
+    <div className="auth-page d-flex justify-content-center align-items-center vh-100">
+      <div className="auth-card card p-4 shadow-lg">
+        <h2 className="auth-title text-center mb-3">Login</h2>
+
         {error && <p className="text-danger text-center">{error}</p>}
 
         {/* Google first */}
-        <GoogleAuthButton />
+        <div className="mb-3">
+          <GoogleAuthButton />
+        </div>
 
         {/* OR divider */}
-        <div className="d-flex align-items-center my-3">
+        <div className="or-divider d-flex align-items-center my-3">
           <hr className="flex-grow-1" />
           <span className="mx-2 text-muted">OR</span>
           <hr className="flex-grow-1" />
@@ -61,7 +65,7 @@ export default function LoginPage() {
           <div className="mb-3">
             <input
               type="email"
-              className="form-control"
+              className="form-control auth-input"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -69,19 +73,20 @@ export default function LoginPage() {
             />
           </div>
 
-          <div className="input-group mb-3">
+          <div className="input-group mb-3 auth-input-group">
             <input
               type={showPassword ? "text" : "password"}
-              className="form-control"
+              className="form-control auth-input"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
             <span
-              className="input-group-text"
-              style={{ cursor: "pointer" }}
+              className="input-group-text reveal-toggle"
               onClick={() => setShowPassword((v) => !v)}
+              role="button"
+              aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
@@ -89,14 +94,23 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="btn btn-primary w-100"
+            className="btn btn-auth-primary w-100"
             disabled={isLoggingin}
           >
             {isLoggingin ? "Logging In…" : "Login"}
           </button>
 
           <div className="text-center mt-2">
-            <Link to="/forgot-password">Forgot password?</Link>
+            <Link to="/forgot-password" className="auth-link">
+              Forgot password?
+            </Link>
+          </div>
+
+          <div className="text-center mt-3">
+            <span className="text-muted me-1">Don’t have an account?</span>
+            <Link to="/register" className="auth-link-strong">
+              Create one
+            </Link>
           </div>
         </form>
       </div>

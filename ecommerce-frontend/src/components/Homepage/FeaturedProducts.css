@@ -69,10 +69,13 @@
 }
 .btn-view-all {
   color: #fff !important;
+
 }
 .btn-view-all:hover {
   color: var(--cta-neutral-700) !important;
 }
+
+
 /* ========== Primary CTA (Add to cart) — deep forest ========== */
 /* Primary Add to cart — neutral */
 .btn-add-to-cart,
@@ -244,4 +247,12 @@
 .btn-wishlist-inline:focus-visible {
   outline: 2px solid #F4C6CB;
   outline-offset: 2px;
+}
+
+.btn-view-more{
+   background:#D4A259 !important; color: #fff !important;
+  border:1.5px solid #D4A259 !important;
+}
+.btn-view-more:hover{
+  background:#C96F56 !important; border-color:#C96F56 !important; color: #fff !important;
 }

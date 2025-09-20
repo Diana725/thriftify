@@ -62,7 +62,7 @@ export default function Footer() {
               </button>
             </form>
             {subscribed && (
-              <p className="text-success mt-2">Thanks for subscribing! 🎉</p>
+              <p className="text-white mt-2">Thanks for subscribing! 🎉</p>
             )}
             {error && <p className="text-danger mt-2">{error}</p>}
           </div>

@@ -21,7 +21,7 @@ export default function OffersSection() {
         <div className="text-center mb-4">
           <h2 className="offers-heading fw-bold mb-1">Current Offers</h2>
           <p className="offers-subtitle m-0">
-            Save more while you thrift—applied automatically at checkout.
+            Save more while you thrift. Applied automatically at checkout.
           </p>
         </div>
 

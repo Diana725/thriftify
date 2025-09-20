@@ -1,0 +1,164 @@
+/* ========= Luxe tokens (order details scope) ========= */
+:root{
+  --cream:#F7F1E5;
+  --ink:#1E2623;
+  --muted:#58615C;
+  --line:#DED6C9;          /* champagne line */
+  --brand:#214E3A;         /* deep forest */
+  --brand-600:#1B3F2F;
+  --cta:#4E5A56;           /* neutral slate */
+  --danger:#C94F4F;        /* refined red */
+  --danger-600:#B74444;
+}
+
+/* Page shell */
+.order-details{
+  background: var(--cream);
+  font-family: 'Poppins', sans-serif;
+  border-radius: 20px;
+}
+
+/* Heading + meta */
+.order-details h1{
+  font-family:'Montserrat',sans-serif;
+  color: var(--brand);
+  text-transform: uppercase;
+  letter-spacing:.45px;
+  font-size:1.35rem;
+  margin-bottom:.25rem;
+}
+.order-details .meta{
+  color: var(--muted);
+  margin-bottom: .75rem;
+}
+
+/* ---- Progress bar (kept in sync with Orders page) ---- */
+.order-details .progress{
+  height: .9rem;
+  background: #eee7da;
+  border-radius: 999px;
+  overflow: hidden;
+  border:1px solid var(--line);
+}
+.order-details .progress-bar{
+  background: linear-gradient(90deg, var(--brand) 0%, var(--brand-600) 100%);
+  font-size:.7rem;
+  font-weight:800;
+}
+
+/* Cards */
+.order-details .card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:1rem;
+  overflow:hidden;
+  box-shadow: 0 10px 28px rgba(0,0,0,.08);
+}
+.order-details .card-header,
+.order-details .card-footer{
+  background: color-mix(in srgb, #ffffff 86%, var(--cream));
+  border-color: var(--line);
+  font-weight:700;
+  color: var(--ink);
+}
+
+/* List items */
+.order-details .list-group-item{
+  border-color: var(--line);
+}
+.order-details .order-line-price{
+  color: var(--ink);
+}
+.order-details .order-line-subtotal{
+  color: var(--brand);
+  font-weight:700;
+}
+.order-details .order-total{
+  font-size: 1.05rem;
+}
+
+/* ---- Collage (2×2) ---- */
+.order-details .thumb-collage{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 1fr;
+  gap: .35rem;
+  aspect-ratio: 1 / 1;
+  border-radius:.6rem;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:#fff;
+}
+.order-details .thumb-collage img{
+  width:100%; height:100%;
+  object-fit:cover; display:block;
+  transition: transform .25s ease, filter .25s ease;
+}
+.order-details .thumb-collage img:hover{
+  transform: scale(1.03);
+}
+
+/* If fewer than 4 images, balance sensibly */
+.order-details .thumb-collage.two{
+  grid-template-columns: 1fr;
+  grid-auto-rows: 1fr;
+}
+.order-details .thumb-collage.two img{ aspect-ratio: 16/12; }
+
+.order-details .thumb-collage.three{
+  grid-template-columns: 1.2fr .8fr;
+}
+.order-details .thumb-collage.three img:nth-child(1){
+  grid-row: 1 / span 2;      /* big tile on the left */
+}
+
+/* Buttons (match site theme) */
+.order-details .btn-secondary{
+  background:#fff;
+  color: var(--cta);
+  border:1.5px solid var(--cta);
+  border-radius:999px;
+  font-weight:700;
+}
+.order-details .btn-secondary:hover{
+  background: var(--cta);
+  color:#fff;
+}
+
+.order-details .btn-danger{
+  background: var(--danger);
+  border-color: var(--danger);
+  border-radius:999px;
+  font-weight:800;
+  box-shadow: 0 10px 24px rgba(201,79,79,.16);
+}
+.order-details .btn-danger:hover{
+  background: var(--danger-600);
+  border-color: var(--danger-600);
+}
+
+/* Spinner inside buttons */
+.order-details .btn .spinner-border{ width:1rem; height:1rem; }
+
+/* Modal subtle polish */
+.order-details .modal-content{
+  border-radius: 1rem;
+  border:1px solid var(--line);
+}
+.order-details .modal-header{
+  background: color-mix(in srgb, #ffffff 86%, var(--cream));
+  border-bottom-color: var(--line);
+}
+.order-details .modal-footer{
+  border-top-color: var(--line);
+}
+
+/* Responsive tweaks */
+@media (max-width: 575.98px){
+  .order-details h1{ font-size:1.2rem; }
+  .order-details .order-line-price,
+  .order-details .order-line-subtotal{
+    text-align:left !important;
+    margin-top:.15rem;
+  }
+}

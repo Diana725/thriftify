@@ -14,6 +14,7 @@ import {
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import "./OrdersPage.css";
 
 const API =
   process.env.REACT_APP_API_BASE_URL || "https://www.thriftify.website/api";
@@ -154,7 +155,7 @@ export default function OrdersPage() {
 
   if (orders.length === 0) {
     return (
-      <Container className="py-5 text-center">
+      <Container className="py-5 orders-page text-center">
         <Alert variant="info">
           You have no orders yet. <Link to="/">Start shopping &rarr;</Link>
         </Alert>
@@ -163,7 +164,7 @@ export default function OrdersPage() {
   }
 
   return (
-    <Container className="py-4 mt-5">
+    <Container className="py-4 mt-5 mb-5 orders-page">
       <h1 className="mb-4">My Orders</h1>
 
       {/* Only show customer-visible statuses */}
@@ -231,7 +232,7 @@ export default function OrdersPage() {
         const progress = ((stepIndex + 1) / STATUS_STEPS.length) * 100;
 
         return (
-          <Card className="mb-5" key={order.id}>
+          <Card className="mb-4" key={order.id}>
             <Card.Header>
               <Row>
                 <Col>
@@ -288,7 +289,12 @@ export default function OrdersPage() {
                 <strong>Total:</strong> Ksh
                 {parseFloat(order.total_amount).toFixed(2)}
               </div>
-              <Button as={Link} to={`/orders/${order.id}`} size="sm">
+              <Button
+                as={Link}
+                to={`/orders/${order.id}`}
+                size="sm"
+                className="view-more"
+              >
                 View Details
               </Button>
             </Card.Footer>

@@ -4,6 +4,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import GoogleAuthButton from "../utils/GoogleAuthButton";
+import "./AuthModal.css";
 
 const API =
   process.env.REACT_APP_API_BASE_URL || "https://www.thriftify.website/api";
@@ -69,7 +70,7 @@ export default function AuthModal({ show, onHide }) {
   };
 
   return (
-    <Modal show={show} onHide={onHide} centered>
+    <Modal show={show} onHide={onHide} centered contentClassName="auth-modal">
       <Modal.Header closeButton>
         <Modal.Title>
           {activeTab === "login" ? "Log In" : "Register"}
@@ -88,24 +89,21 @@ export default function AuthModal({ show, onHide }) {
           </Nav>
 
           <Tab.Content>
-            {/* LOGIN FORM */}
             <Tab.Pane eventKey="login">
-              {/* Google first */}
-              <GoogleAuthButton />
+              <GoogleAuthButton className="google-btn" />
 
-              {/* OR divider */}
-              <div className="d-flex align-items-center my-3">
+              <div className="or-divider d-flex align-items-center my-3">
                 <hr className="flex-grow-1" />
                 <span className="mx-2 text-muted">OR</span>
                 <hr className="flex-grow-1" />
               </div>
 
-              {/* Email/password form */}
               <Form onSubmit={handleLogin}>
                 <Form.Group className="mb-3" controlId="loginEmail">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
                     type="email"
+                    className="auth-input"
                     value={loginData.email}
                     onChange={(e) =>
                       setLoginData({ ...loginData, email: e.target.value })
@@ -113,11 +111,13 @@ export default function AuthModal({ show, onHide }) {
                     required
                   />
                 </Form.Group>
+
                 <Form.Group className="mb-3" controlId="loginPassword">
                   <Form.Label>Password</Form.Label>
-                  <InputGroup>
+                  <InputGroup className="auth-input-group">
                     <Form.Control
                       type={showLoginPassword ? "text" : "password"}
+                      className="auth-input"
                       value={loginData.password}
                       onChange={(e) =>
                         setLoginData({ ...loginData, password: e.target.value })
@@ -126,36 +126,35 @@ export default function AuthModal({ show, onHide }) {
                     />
                     <Button
                       variant="outline-secondary"
+                      className="reveal-toggle"
                       onClick={() => setShowLoginPassword((v) => !v)}
                     >
                       {showLoginPassword ? <FaEyeSlash /> : <FaEye />}
                     </Button>
                   </InputGroup>
                 </Form.Group>
-                <Button type="submit" className="w-100">
+
+                <Button type="submit" className="w-100 btn-auth-primary">
                   Log In
                 </Button>
               </Form>
             </Tab.Pane>
 
-            {/* REGISTER FORM */}
             <Tab.Pane eventKey="register">
-              {/* Google first */}
-              <GoogleAuthButton />
+              <GoogleAuthButton className="google-btn" />
 
-              {/* OR divider */}
-              <div className="d-flex align-items-center my-3">
+              <div className="or-divider d-flex align-items-center my-3">
                 <hr className="flex-grow-1" />
                 <span className="mx-2 text-muted">OR</span>
                 <hr className="flex-grow-1" />
               </div>
 
-              {/* Registration form */}
               <Form onSubmit={handleRegister}>
                 <Form.Group className="mb-3" controlId="regName">
                   <Form.Label>Name</Form.Label>
                   <Form.Control
                     type="text"
+                    className="auth-input"
                     value={registerData.name}
                     onChange={(e) =>
                       setRegisterData({ ...registerData, name: e.target.value })
@@ -163,10 +162,12 @@ export default function AuthModal({ show, onHide }) {
                     required
                   />
                 </Form.Group>
+
                 <Form.Group className="mb-3" controlId="regEmail">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
                     type="email"
+                    className="auth-input"
                     value={registerData.email}
                     onChange={(e) =>
                       setRegisterData({
@@ -177,11 +178,13 @@ export default function AuthModal({ show, onHide }) {
                     required
                   />
                 </Form.Group>
+
                 <Form.Group className="mb-3" controlId="regPassword">
                   <Form.Label>Password</Form.Label>
-                  <InputGroup>
+                  <InputGroup className="auth-input-group">
                     <Form.Control
                       type={showRegisterPassword ? "text" : "password"}
+                      className="auth-input"
                       value={registerData.password}
                       onChange={(e) =>
                         setRegisterData({
@@ -193,6 +196,7 @@ export default function AuthModal({ show, onHide }) {
                     />
                     <Button
                       variant="outline-secondary"
+                      className="reveal-toggle"
                       onClick={() => setShowRegisterPassword((v) => !v)}
                     >
                       {showRegisterPassword ? <FaEyeSlash /> : <FaEye />}
@@ -202,9 +206,10 @@ export default function AuthModal({ show, onHide }) {
 
                 <Form.Group className="mb-3" controlId="regPasswordConfirm">
                   <Form.Label>Confirm Password</Form.Label>
-                  <InputGroup>
+                  <InputGroup className="auth-input-group">
                     <Form.Control
                       type={showRegisterConfirm ? "text" : "password"}
+                      className="auth-input"
                       value={registerData.password_confirmation}
                       onChange={(e) =>
                         setRegisterData({
@@ -216,13 +221,15 @@ export default function AuthModal({ show, onHide }) {
                     />
                     <Button
                       variant="outline-secondary"
+                      className="reveal-toggle"
                       onClick={() => setShowRegisterConfirm((v) => !v)}
                     >
                       {showRegisterConfirm ? <FaEyeSlash /> : <FaEye />}
                     </Button>
                   </InputGroup>
                 </Form.Group>
-                <Button type="submit" className="w-100">
+
+                <Button type="submit" className="w-100 btn-auth-primary">
                   Register
                 </Button>
               </Form>
