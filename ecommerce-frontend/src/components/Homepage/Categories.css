@@ -60,6 +60,7 @@
   overflow-x: auto;
   padding: 1rem 3rem;           /* room for arrows */
   scroll-snap-type: x mandatory;
+  margin-left: 2rem;
   scroll-behavior: smooth;
 }
 .carousel-track::-webkit-scrollbar { display: none; }
@@ -80,6 +81,7 @@
   align-items: center; justify-content: center;
   padding: .65rem 1rem;
   min-width: max-content;
+  /* margin-left: 5rem; */
   height: 44px;
   border-radius: 999px;
   background: #fff;
@@ -157,8 +159,21 @@
   .carousel-btn { font-size: 1.1rem; padding: .4rem; }
 }
 @media (max-width: 480px) {
-  .carousel-track { padding: .7rem 2.25rem; gap: .5rem; }
-  .category-text-only.category-chip { height: 38px; padding: .5rem .8rem; }
+  .carousel-track { 
+    padding: .7rem 2.25rem; 
+    gap: .5rem; 
+  }
+
+  /* Nudge the first chip so it clears the left arrow/fade */
+  .carousel-track > .category-chip:first-child {
+    margin-left: 4.75rem !important;   /* tweak 2.5–3rem to taste */
+  }
+
+  .category-text-only.category-chip { 
+    height: 38px; 
+    padding: .5rem .8rem; 
+  }
   .category-label { font-size: .85rem; }
   .carousel-btn { font-size: 1rem; padding: .35rem; }
 }
+

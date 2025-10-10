@@ -5,6 +5,7 @@ import { Nav } from "react-bootstrap";
 import NotificationsBell from "./NotificationsBell";
 import AccountModal from "./AccountModal";
 import { FaChevronDown } from "react-icons/fa";
+import HelpMenu from "./HelpMenu";
 
 const API =
   process.env.REACT_APP_API_BASE_URL || "https://www.thriftify.website/api";
@@ -274,6 +275,11 @@ export default function Navbar() {
                     <li>
                       <Nav.Item className="nav-item position-relative">
                         <NotificationsBell />
+                      </Nav.Item>
+                    </li>
+                    <li>
+                      <Nav.Item className="nav-item position-relative">
+                        <HelpMenu />
                       </Nav.Item>
                     </li>
                   </>

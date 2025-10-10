@@ -303,13 +303,13 @@ export default function ProductPage() {
                           style={{
                             position: "absolute",
                             top: "8px",
-                            left: "-12px",
+                            left: "4px",
                             background: "#dc3545", // Bootstrap danger
                             color: "#fff",
-                            padding: "4px 12px",
+                            padding: "4px 6px",
                             fontSize: "12px",
                             fontWeight: 700,
-                            transform: "rotate(-15deg)",
+
                             boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
                             zIndex: 2,
                             borderRadius: "4px",

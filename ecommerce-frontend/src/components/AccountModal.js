@@ -9,6 +9,7 @@ import {
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import "./AccountModal.css";
 
 export default function AccountModal({ show, handleClose }) {
   const [user, setUser] = useState(null);
@@ -99,7 +100,12 @@ export default function AccountModal({ show, handleClose }) {
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal
+      show={show}
+      onHide={handleClose}
+      centered
+      className="modal-brand" // 👈 attach brand styles
+    >
       <Modal.Header closeButton>
         <Modal.Title>My Account</Modal.Title>
       </Modal.Header>
@@ -110,6 +116,7 @@ export default function AccountModal({ show, handleClose }) {
             variant="success"
             onClose={() => setSuccessMessage("")}
             dismissible
+            className="alert-brand" // 👈 brand success style
           >
             {successMessage}
           </Alert>
@@ -162,8 +169,10 @@ export default function AccountModal({ show, handleClose }) {
                   onChange={handleChange}
                 />
                 <InputGroup.Text
-                  style={{ cursor: "pointer" }}
+                  className="ig-eye"
                   onClick={() => toggleShow("current_password")}
+                  role="button"
+                  tabIndex={0}
                 >
                   {showPasswords.current_password ? <FiEyeOff /> : <FiEye />}
                 </InputGroup.Text>
@@ -180,8 +189,10 @@ export default function AccountModal({ show, handleClose }) {
                   onChange={handleChange}
                 />
                 <InputGroup.Text
-                  style={{ cursor: "pointer" }}
+                  className="ig-eye"
                   onClick={() => toggleShow("password")}
+                  role="button"
+                  tabIndex={0}
                 >
                   {showPasswords.password ? <FiEyeOff /> : <FiEye />}
                 </InputGroup.Text>
@@ -200,8 +211,10 @@ export default function AccountModal({ show, handleClose }) {
                   onChange={handleChange}
                 />
                 <InputGroup.Text
-                  style={{ cursor: "pointer" }}
+                  className="ig-eye"
                   onClick={() => toggleShow("password_confirmation")}
+                  role="button"
+                  tabIndex={0}
                 >
                   {showPasswords.password_confirmation ? (
                     <FiEyeOff />
@@ -212,12 +225,12 @@ export default function AccountModal({ show, handleClose }) {
               </InputGroup>
             </Form.Group>
 
-            <Button variant="primary" type="submit" disabled={loading}>
+            <Button type="submit" className="btn-terra" disabled={loading}>
               {loading ? "Saving…" : "Save Changes"}
             </Button>
             <Button
-              variant="secondary"
-              className="ms-2"
+              type="button"
+              className="btn-ghost ms-2"
               onClick={() => setEditMode(false)}
             >
               Cancel
@@ -229,13 +242,13 @@ export default function AccountModal({ show, handleClose }) {
       <Modal.Footer>
         {!loading && !editMode && (
           <>
-            <Button variant="secondary" onClick={() => setEditMode(true)}>
+            <Button className="btn-terra" onClick={() => setEditMode(true)}>
               Edit
             </Button>
             <Button variant="danger" onClick={handleDelete} disabled={loading}>
               Delete Account
             </Button>
-            <Button variant="outline-secondary" onClick={handleClose}>
+            <Button className="btn-ghost" onClick={handleClose}>
               Close
             </Button>
           </>

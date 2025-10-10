@@ -1,0 +1,97 @@
+/* Brand palette (already in your project; shown for context) */
+:root{
+  --terra: #24564b;      /* deep green */
+  --accent: #C96F56;     /* warm terracotta */
+  --cream: #f7f1e5;      /* site beige */
+  --line: #e9dfd1;
+  --text: #1e2b27;
+  --muted: #6b7d78;
+}
+
+/* ===== Modal container ===== */
+.modal-brand .modal-content{
+  background: var(--cream);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  box-shadow: 0 12px 32px rgba(0,0,0,.12);
+}
+
+/* Header */
+.modal-brand .modal-header{
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(0,0,0,0.02), transparent);
+}
+.modal-brand .modal-title{
+font-family: 'Montserrat', sans-serif;
+  color: var(--terra);
+  letter-spacing: .2px;
+}
+.modal-brand .btn-close{
+  filter: grayscale(100%);
+  opacity: .6;
+}
+.modal-brand .btn-close:hover{ opacity: .9; }
+
+/* Footer */
+.modal-brand .modal-footer{
+  border-top: 1px solid var(--line);
+  background: transparent;
+}
+
+/* ===== Form controls ===== */
+.modal-brand .form-label{
+  font-weight: 600;
+  color: var(--terra);
+}
+.modal-brand .form-control{
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: .75rem;
+}
+.modal-brand .form-control:focus{
+  border-color: var(--accent);
+  box-shadow: 0 0 0 .2rem rgba(201,111,86,.25);
+}
+
+/* InputGroup eye icon pill */
+.modal-brand .input-group-text.ig-eye{
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: none;
+  cursor: pointer;
+  color: var(--muted);
+}
+.modal-brand .input-group-text.ig-eye:hover{
+  color: var(--terra);
+}
+
+/* ===== Alerts (success) ===== */
+.alert-brand.alert-success{
+  background: #fff8f6;                 /* very light warm */
+  border: 1px solid rgba(201,111,86,.35);
+  color: var(--text);
+  border-left: 4px solid var(--accent);
+  border-radius: .875rem;
+}
+
+/* ===== Buttons ===== */
+.btn-terra{
+  --bs-btn-color:#fff;
+  --bs-btn-bg: var(--terra);
+  --bs-btn-border-color: var(--terra);
+  --bs-btn-hover-bg: #1e4a41;
+  --bs-btn-hover-border-color: #1e4a41;
+  --bs-btn-focus-shadow-rgb: 36,86,75;
+  border-radius: 999px;
+  font-weight: 600;
+}
+.btn-ghost{
+  --bs-btn-color: var(--terra);
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: var(--line);
+  --bs-btn-hover-bg: rgba(36,86,75,.06);
+  --bs-btn-hover-border-color: var(--terra);
+  border-radius: 999px;
+  font-weight: 600;
+}

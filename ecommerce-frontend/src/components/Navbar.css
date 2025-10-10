@@ -6,7 +6,8 @@
   --color-terra: #7A5E4A;          /* cognac accent for lines/underlines */
   --color-danger: #C94F4F;         /* badges/hearts etc. */
   --font-base: 'Poppins', sans-serif;
-  --font-logo: 'Pacifico', cursive;
+--font-logo: 'Pacifico', cursive;
+
 }
 
 /* Base */
@@ -14,7 +15,7 @@
   background: rgba(247,241,229,.92) !important;
   backdrop-filter: saturate(115%) blur(6px);
   font-family: var(--font-base);
-  padding: .8rem 0;
+  padding: .3rem 0;
   border-bottom: 1px solid rgba(0,0,0,.06);
   box-shadow: 0 6px 20px rgba(0,0,0,.06);
 }
@@ -27,7 +28,7 @@
 .logo-type.navbar-brand {
   font-family: var(--font-logo) !important;
   color: var(--color-primary) !important;
-  font-size: 1.65rem;
+  font-size: 1.85rem;
   letter-spacing: .3px;
 }
 
@@ -100,10 +101,12 @@
 
 /* Badge spacing + position */
 .navbar .nav-item { position: relative; }
-.navbar .nav-item .nav-link {
-  display: inline-flex;
+.navbar .nav-item .nav-link{
+  position: relative;
+  display: inline-flex;           /* not block; hug content */
   align-items: center;
-  padding-right: 1.4rem;    /* room for badge */
+  width: auto;                    /* prevent full-width */
+  padding-right: .25rem;          /* tiny breathing room */
 }
 .navbar .nav-item .badge {
   position: absolute;
@@ -143,3 +146,36 @@
 /* Utilities */
 .rounded-4 { border-radius: 1rem; }
 .shadow-soft { box-shadow: 0 6px 24px rgba(0,0,0,0.06); }
+@media (max-width: 480px){
+  .navbar .nav-item .badge{
+    top: 0.25rem;
+    right: 0.2rem;
+    transform: translate(45%, -45%);  /* overlaps the corner neatly */
+    min-width: 1rem;
+    height: 1rem;
+    line-height: 1rem;
+    font-size: .65rem;
+    padding: 0 .3rem;
+  }
+}
+/* Remove caret so it looks like the bell */
+#help-dropdown::after,
+#notif-dropdown::after { display: none; }
+
+/* Optional: same subtle focus ring */
+#help-dropdown:focus {
+  box-shadow: 0 0 0 .2rem rgba(201, 111, 86, .25);
+  outline: none;
+}
+#notif-dropdown:focus {
+  box-shadow: 0 0 0 .2rem rgba(201, 111, 86, .25);
+  outline: none;
+}
+
+/* Optional: slight hover tint to match your theme */
+#help-dropdown:hover {
+  filter: brightness(0.98);
+}
+#notif-dropdown:hover {
+   filter: brightness(0.98);
+}

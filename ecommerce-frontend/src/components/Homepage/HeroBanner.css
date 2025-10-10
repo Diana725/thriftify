@@ -138,3 +138,85 @@
   .hero-caption { width: 92%; margin-left: 12px; padding-bottom: 2rem; }
   .hero-chips li { font-size: .75rem; padding: .3rem .5rem; }
 }
+/* ===== Hero: phone layout (clean, centered) ===== */
+@media (max-width: 480px) {
+  /* image size */
+  .hero-image{
+    height: 52vh;            /* fits on screen */
+    min-height: 300px;
+    max-height: 420px;
+    object-position: center;
+  }
+
+  /* vertical mask works better on portrait */
+  .hero-mask{
+    background: linear-gradient(
+      180deg,
+      rgba(0,0,0,.40) 0%,
+      rgba(0,0,0,.22) 40%,
+      rgba(0,0,0,.06) 75%,
+      rgba(0,0,0,0) 100%
+    );
+  }
+
+  /* CENTER the whole caption block */
+  .hero-carousel .carousel-caption{
+    position: absolute;
+    left: 50% !important;     /* override Bootstrap's left/right */
+    right: auto !important;
+    top: auto;
+    bottom: 16%;
+    transform: translateX(-50%);
+    width: min(92vw, 360px);  /* compact width */
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+
+  /* compact glass promo */
+  .hero-carousel .promo-panel{
+    display: block;
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+    padding: 12px 14px !important;
+    border-radius: 12px;
+  }
+
+  /* smaller type */
+  .hero-title{ font-size: 1.35rem; }
+  .hero-subtitle{ font-size: .95rem; }
+
+  /* CTAs centered & tidy */
+  .hero-carousel .hero-ctas{
+    display: flex;
+    justify-content: center;
+    gap: .5rem;
+    margin-top: .6rem;
+    flex-wrap: wrap;
+  }
+  .hero-carousel .btn-cta-primary,
+  .hero-carousel .btn-cta-ghost{
+    padding: .55rem .9rem;
+    border-radius: 10px;
+  }
+
+  /* optional: hide chips on phones (less clutter) */
+  .hero-carousel .hero-chips{ display: none; }
+
+  /* dots at the bottom, centered like a normal carousel */
+  .hero-shell .carousel-indicators{
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    justify-content: center;
+  }
+
+  /* optional: hide side arrows on phones */
+  .hero-carousel .carousel-control-prev,
+  .hero-carousel .carousel-control-next{
+    display: none;
+  }
+}

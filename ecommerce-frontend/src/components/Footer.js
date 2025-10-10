@@ -45,7 +45,7 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-top container footer-shell">
         {/* Newsletter */}
-        <div className="footer-section newsletter">
+        <div className="footer-section newsletter d-flex flex-column align-items-center text-center w-100">
           <h3>Stay in the Loop</h3>
           <div className="newsletter-card glass-lite shadow-soft">
             <form className="newsletter-form" onSubmit={handleSubscribe}>
@@ -80,6 +80,9 @@ export default function Footer() {
             </li>
             <li>
               <Link to="/offers">Offers</Link>
+            </li>
+            <li>
+              <Link to="/contact">Contacts</Link>
             </li>
           </ul>
         </div>

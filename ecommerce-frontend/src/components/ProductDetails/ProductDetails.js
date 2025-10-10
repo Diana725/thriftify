@@ -171,27 +171,76 @@ export default function ProductDetails() {
     <Container className="product-details py-4 mb-5">
       <Row className="align-items-center">
         <Col md={6}>
-          {/* Images collage (replace the Carousel block with this) */}
-          <div className="gallery-collage shadow rounded-4">
-            {imgs.slice(0, 4).map((img, i) => (
-              <button
-                key={i}
-                type="button"
-                className={`gallery-cell ${i === 0 ? "hero" : ""}`}
-                onClick={() => openLightbox(i)} // <-- opens the lightbox
-                aria-label="Open image"
-                style={{ all: "unset", cursor: "zoom-in", display: "block" }}
-              >
-                <img
-                  src={img.image_url}
-                  alt={`${product.name} ${i + 1}`}
-                  className="gallery-img fade-image"
-                  loading="lazy"
-                  decoding="async"
-                  onLoad={(e) => e.currentTarget.classList.add("loaded")}
-                />
-              </button>
-            ))}
+          {/* Desktop & tablets (md+): collage with hint */}
+          <div className="d-none d-md-block">
+            <div className="gallery-collage shadow rounded-4 position-relative">
+              {imgs.slice(0, 4).map((img, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  className={`gallery-cell ${i === 0 ? "hero" : ""}`}
+                  onClick={() => openLightbox(i)}
+                  aria-label={`Open image ${i + 1} in gallery`}
+                  style={{ all: "unset", cursor: "zoom-in", display: "block" }}
+                  onKeyDown={(e) =>
+                    (e.key === "Enter" || e.key === " ") && openLightbox(i)
+                  }
+                  role="button"
+                  tabIndex={0}
+                >
+                  <img
+                    src={img.image_url}
+                    alt={`${product.name} ${i + 1}`}
+                    className="gallery-img fade-image"
+                    loading="lazy"
+                    decoding="async"
+                    onLoad={(e) => e.currentTarget.classList.add("loaded")}
+                  />
+                </button>
+              ))}
+              <div className="collage-hint" aria-hidden="true">
+                Click to zoom
+              </div>
+            </div>
+            <button
+              className="btn btn-outline-secondary btn-sm mt-2"
+              onClick={() => openLightbox(0)}
+              aria-label="Open full gallery"
+            >
+              View all {imgs.length} photos
+            </button>
+          </div>
+
+          {/* Mobile (sm and below): swipe carousel + hint */}
+          <div className="d-md-none">
+            <Carousel interval={null} touch indicators>
+              {imgs.map((img, i) => (
+                <Carousel.Item key={i}>
+                  <button
+                    type="button"
+                    onClick={() => openLightbox(i)}
+                    aria-label={`Open image ${i + 1} in gallery`}
+                    style={{
+                      all: "unset",
+                      cursor: "zoom-in",
+                      display: "block",
+                      width: "100%",
+                    }}
+                  >
+                    <img
+                      src={img.image_url}
+                      alt={`${product.name} ${i + 1}`}
+                      className="d-block w-100 rounded-4"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                </Carousel.Item>
+              ))}
+            </Carousel>
+            <div className="gallery-hint text-center mt-2">
+              Tap image to zoom
+            </div>
           </div>
         </Col>
 

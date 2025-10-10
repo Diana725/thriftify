@@ -1,3 +1,46 @@
 html {
   scroll-behavior: smooth;
 }
+/* Toast success (on-brand) */
+.Toastify__toast--success {
+  border-left: 4px solid var(--terra, #C96F56); /* your brand green */
+  background: #f7f1e5; /* same beige as your site */
+  color: var(--terra, #24564b);
+  font-weight: 500;
+}
+
+/* Optional tweak: success icon */
+.Toastify__toast-icon svg {
+  fill: var(--terra, #C96F56) !important;
+}
+
+/* Keep error toast red but in same style */
+.Toastify__toast--error {
+  border-left: 4px solid #c96f56;
+  background: #fff6f5;
+  color: #c96f56;
+}
+
+/* General toast container styling */
+.Toastify__toast {
+  border-radius: 1rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  font-family: var(--font-ui, 'Inter', sans-serif);
+}
+
+.Toastify__progress-bar--success {
+  background:  #C96F56 !important;
+}
+/* Optional: smooth transition and rounded edge */
+.Toastify__progress-bar {
+  border-radius: 0 0 1rem 1rem;
+  height: 4px;
+  transition: width 0.25s ease;
+}
+
+.Toastify__close-button {
+  color: var(--terra, #C96F56);
+}
+.Toastify__close-button:hover {
+  opacity: 0.6;
+}

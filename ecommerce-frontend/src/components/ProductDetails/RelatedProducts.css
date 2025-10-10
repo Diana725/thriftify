@@ -42,7 +42,7 @@
 /* Image */
 .related-img-wrapper{ position: relative; aspect-ratio: 1 / 1; overflow:hidden; background:#fff; }
 .related-image{
-  width:100%; height:100%; object-fit:cover; display:block;
+  width:100%; height:100%; object-fit: cover; display:block;
   transition: transform .35s ease, opacity .3s ease;
   background:#fff;
 }

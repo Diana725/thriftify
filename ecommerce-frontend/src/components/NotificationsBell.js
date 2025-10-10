@@ -10,9 +10,9 @@ export default function NotificationsBell() {
 
   const handleToggle = (isOpen) => {
     if (isOpen) {
-      markAllRead(); // user is now viewing, mark them read
+      markAllRead();
     } else {
-      clearReadNotifications(); // user closed dropdown → remove read
+      clearReadNotifications();
     }
     setOpen(isOpen);
   };
@@ -26,7 +26,10 @@ export default function NotificationsBell() {
       >
         <BellFill
           size={20}
-          style={{ backgroundColor: "#f7f1e5", borderColor: "#f7f1e5" }}
+          style={{
+            backgroundColor: "#f7f1e5",
+            borderColor: "#4E5A56",
+          }}
         />
         {unreadCount > 0 && (
           <Badge

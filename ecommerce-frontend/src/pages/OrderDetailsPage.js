@@ -143,20 +143,24 @@ export default function OrderDetailsPage() {
                 <ListGroup.Item className="order-item">
                   <Row className="align-items-center g-3">
                     <Col md={2}>
-                      <div className={`thumb-collage ${collageClass}`}>
-                        {(imgs.length
-                          ? imgs
-                          : [{ image_url: "/placeholder.png" }]
-                        )
-                          .slice(0, 4)
-                          .map((img, index) => (
+                      {(() => {
+                        const imgs = item.product?.images || [];
+                        const firstSrc =
+                          imgs[0] && imgs[0].image_url
+                            ? imgs[0].image_url
+                            : "/placeholder.png";
+                        return (
+                          <div className="thumb-single">
                             <img
-                              key={index}
-                              src={img.image_url}
-                              alt={`${item.product.name} ${index + 1}`}
+                              src={firstSrc}
+                              alt={`${item.product?.name || "Product"} 1`}
+                              loading="lazy"
+                              width={96}
+                              height={96}
                             />
-                          ))}
-                      </div>
+                          </div>
+                        );
+                      })()}
                     </Col>
 
                     <Col md={5}>{item.product.name}</Col>

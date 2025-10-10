@@ -34,6 +34,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import OffersPage from "./pages/OffersPage";
+import ContactHelpPage from "./pages/Contact";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -202,6 +203,14 @@ export default function AppRoutes() {
             element={
               <AnimatedPage>
                 <OrdersPage />
+              </AnimatedPage>
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              <AnimatedPage>
+                <ContactHelpPage />
               </AnimatedPage>
             }
           />

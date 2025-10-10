@@ -50,30 +50,50 @@
 }
 .shadow-soft{ box-shadow: 0 8px 26px rgba(0,0,0,.12); }
 
-.newsletter-card{ padding: 1rem; }
-.newsletter-form{
-  display:flex; gap:.6rem; flex-wrap:wrap;
+.newsletter-card {
+  padding: 1rem;
+  text-align: center;
+  max-width: 500px;
+  margin: 0 auto;
 }
-.newsletter-form input{
-  flex:1 1 240px;
-  padding:.7rem .9rem;
-  border:1px solid rgba(255,255,255,.45);
-  border-radius:999px;
-  background: rgba(255,255,255,.1);
-  color:#fff;
-  outline:none;
-}
-.newsletter-form input::placeholder{ color: rgba(255,255,255,.85); }
 
-.btn-pill{
-  padding:.7rem 1.1rem;
-  border:none; border-radius:999px;
+.newsletter-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.newsletter-form input {
+  flex: 1 1 260px;
+  padding: 0.7rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+}
+
+.newsletter-form input::placeholder {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.btn-pill {
+  padding: 0.7rem 1.1rem;
+  border: none;
+  border-radius: 999px;
   background: var(--color-secondary);
   color: var(--color-primary);
-  font-weight:700;
-  transition: transform .15s ease, opacity .2s ease;
+  font-weight: 700;
+  transition: transform 0.15s ease, opacity 0.2s ease;
 }
-.btn-pill:hover{ opacity:.92; transform: translateY(-1px); }
+
+.btn-pill:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
 
 /* Links */
 .footer-section ul{ list-style:none; padding:0; margin:0; }
@@ -129,9 +149,93 @@
 }
 @media (max-width: 640px){
   .footer-shell{
-    grid-template-columns: 1fr;
+    /* grid-template-columns: 1fr; */
     text-align:center;
   }
   .social-icons{ justify-content:center; }
   .payment-icons{ justify-content:center; }
+}
+@media (max-width: 480px) {
+  .newsletter-card {
+    padding: 0.5rem;
+    max-width: 100%;
+    /* max-height: 50%; */
+  }
+
+  .newsletter-form {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .newsletter-form input {
+    width: 100%;
+    min-width: unset;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.9rem;
+    border-radius: 6px;  /* <- less round on small screens */
+  }
+
+  .btn-pill {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 6px;  /* <- matches input’s subtle shape */
+    font-size: 0.95rem;
+  }
+}
+/* MOBILE: make the newsletter block small, centered, and inline */
+@media (max-width: 480px){
+  .footer-shell { justify-items: center; }
+
+  /* center the whole section in the grid row */
+  .footer-section.newsletter {
+    justify-self: center !important;        /* center the whole section in the grid */
+    width: 100%;
+  }
+     .footer-section.newsletter h3 {
+    max-width: 320px;            /* match .newsletter-form */
+    width: 100%;
+    margin: 0 auto .6rem;        /* center horizontally */
+    text-align: center;
+  }
+
+  /* kill the big card look on phones */
+  .newsletter-card {
+    padding: 0;                /* no extra height */
+    background: none;          /* remove glass */
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+    /* display: flex;
+    justify-content: center;  */
+
+  }
+
+  /* constrain and center just the form */
+  .newsletter-form{
+    display: flex;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: .4rem;
+    max-width: 320px;          /* <- small */
+    margin: 0 auto;            /* center */
+    flex-wrap: nowrap;         /* keep inline */
+  }
+
+  .newsletter-form input{
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: .45rem .6rem;     /* shorter */
+    font-size: .9rem;
+    border-radius: 6px;        /* normal corners */
+    line-height: 1.2;
+  }
+
+  .btn-pill{
+    flex: 0 0 auto;
+    padding: .45rem .7rem;     /* match input height */
+    font-size: .9rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
 }

@@ -1,0 +1,81 @@
+/* Hero */
+.contact-hero-shell { padding-block: clamp(10px, 2vw, 18px); }
+.contact-hero { background: var(--color-cream); }
+.contact-hero-media { position: relative; }
+.contact-hero-img {
+  width: 100%; height: clamp(220px, 38vh, 360px); object-fit: cover;
+  border-radius: 16px;
+}
+.contact-hero-mask{
+  position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,0) 70%);
+}
+.contact-hero-caption{
+  position:absolute; left:50%; bottom:10%;
+  transform: translateX(-50%);
+  text-align:center; z-index:2;
+}
+.contact-title{
+  font-family: var(--font-head); color:#fff; margin:0;
+  text-shadow: 0 2px 12px rgba(0,0,0,.35);
+}
+.contact-subtitle{ color:#fff; margin:.25rem 0 0; }
+
+/* Cards */
+.contact-card{
+  border-radius: 16px;
+  padding: 1rem 1.1rem;
+}
+.contact-card h3{
+  font-family: var(--font-head);
+  color: var(--color-secondary);
+  margin-bottom:.35rem;
+  text-transform: uppercase;
+  font-size:1rem; letter-spacing:.4px;
+}
+.contact-link{
+  display:inline-block;
+  color: var(--color-primary);
+  font-weight:700;
+  text-decoration:none;
+  border-bottom:1px dashed color-mix(in srgb, var(--color-primary) 50%, transparent);
+}
+.contact-link:hover{ opacity:.9; }
+
+/* Form */
+.input-pill{
+  border-radius: 999px;
+  border:1px solid color-mix(in srgb, var(--color-primary) 18%, #ccc);
+  padding:.6rem .9rem;
+}
+.textarea-soft{
+  border-radius: 12px;
+  border:1px solid color-mix(in srgb, var(--color-primary) 18%, #ccc);
+  padding:.7rem .9rem;
+}
+
+/* Luxe buttons (reusing from earlier) */
+.btn-luxe-primary{
+  background: var(--color-secondary);
+  color: #fff; border:0; border-radius:999px; padding:.6rem 1.1rem;
+  font-weight:700; box-shadow:0 6px 16px rgba(212,162,89,.35);
+  transition: transform .15s ease, opacity .2s ease;
+}
+.btn-luxe-primary:hover{ transform: translateY(-1px); opacity:.95; }
+.btn-luxe-ghost{
+  background: color-mix(in srgb, var(--color-secondary) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-secondary) 55%, transparent);
+  color: var(--color-primary);
+  border-radius:999px; padding:.55rem 1rem; font-weight:600;
+}
+
+/* FAQ steps */
+.list-steps{ margin: .25rem 0 0 .2rem; padding-left: 1rem; }
+.list-steps li{ margin:.25rem 0; }
+
+/* Mobile tweaks */
+@media (max-width: 480px){
+  .contact-hero-caption{ bottom: 12%; width: 92%; }
+  .contact-title{ font-size: 1.35rem; }
+  .contact-subtitle{ font-size: .95rem; }
+}

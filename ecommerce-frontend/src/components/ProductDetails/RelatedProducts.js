@@ -64,6 +64,7 @@ export default function RelatedProducts({ productId }) {
                         loading="lazy"
                         src={prod.image_url}
                         alt={prod.name}
+                        // style={{ display: "contain" }}
                         className="related-image fade-image"
                         onLoad={(e) => e.currentTarget.classList.add("loaded")}
                       />
